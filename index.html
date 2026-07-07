@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KAPÉ — Lomitos Árabes</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="carrito/carrito.css" />
+</head>
+<body>
+
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer__header">
+      <span class="drawer__title">Tu pedido</span>
+      <button class="drawer__close" onclick="toggleDrawer()">✕</button>
+    </div>
+    <div class="drawer__items" id="drawerItems">
+      <p class="drawer__empty">Tu carrito está vacío.</p>
+    </div>
+    <div class="drawer__footer">
+      <div class="drawer__subtotal">
+        <span class="drawer__subtotal-label">Total</span>
+        <span class="drawer__subtotal-price" id="drawerTotal">$0</span>
+      </div>
+      <button class="checkout-btn" onclick="handleCheckout()">Confirmar pedido</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ══ HEADER ══ -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-k" aria-hidden="true">K</span>
+      <div class="logo-text">
+        <span class="logo-name">Kapé</span>
+        <span class="logo-sub">Lomitos Árabes</span>
+      </div>
+    </div>
+    <nav class="header__nav">
+      <a href="https://instagram.com/kape.vm" target="_blank" rel="noopener">Instagram</a>
+    </nav>
+
+    <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-total" id="cartTotal">$0</span>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </header>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero__line">
+      <span class="hero__eyebrow">Villa María · Córdoba</span>
+    </div>
+    <h1 class="hero__title">KA<span>P</span>É</h1>
+    <p class="hero__subtitle">— Lomitos Árabes —</p>
+  </section>
+
+  <!-- ══ GRID: solo 2 cards de entrada ══ -->
+  <!-- ══ GRID: se genera solo desde Supabase ══ -->
+  <main class="grid-section" id="gridCategorias">
+    <p class="loading-msg" id="loadingCategoriasIndex">Cargando categorías...</p>
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <span>© 2026 Kapé Lomitos Árabes · Villa María</span>
+  </footer>
+
+  <!-- 1. Librería de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- 2. Configuración compartida -->
+  <script src="js/supabaseConfig.js"></script>
+  <!-- 3. Carrito compartido -->
+  <script src="carrito/carrito.js"></script>
+  <script src="js/categorias-index.js"></script>
+
+</body>
+</html>

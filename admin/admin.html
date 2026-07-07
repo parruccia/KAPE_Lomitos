@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — KAPÉ</title>
+  <link rel="stylesheet" href="../carrito/carrito.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- ══ LOGIN ══ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <span class="logo-k" aria-hidden="true">K</span>
+      <h1 class="login-title">Panel Admin</h1>
+      <p class="login-sub">Kapé Lomitos Árabes</p>
+
+      <div class="form-group">
+        <label class="form-label" for="loginEmail">Email</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="admin@kape.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loginPass">Contraseña</label>
+        <input class="form-input" type="password" id="loginPass" placeholder="••••••••" />
+      </div>
+      <p class="login-error" id="loginError"></p>
+      <button class="submit-btn" id="loginBtn" onclick="login()">Ingresar</button>
+    </div>
+  </div>
+
+  <!-- ══ PANEL ══ -->
+  <div class="panel-screen" id="panelScreen" style="display:none">
+
+    <header class="header">
+      <a href="../index.html" class="header__logo">
+        <span class="logo-k" aria-hidden="true">K</span>
+        <div class="logo-text">
+          <span class="logo-name">Kapé</span>
+          <span class="logo-sub">Admin</span>
+        </div>
+      </a>
+      <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- Selector de sección -->
+      <div class="secciones">
+        <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
+        <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
+      </div>
+
+      <!-- ══ SECCIÓN PRODUCTOS ══ -->
+      <div id="seccionProductos">
+        <div class="toolbar">
+          <h2 class="toolbar__title">Productos</h2>
+          <button class="add-btn" onclick="abrirModal()">+ Nuevo producto</button>
+        </div>
+
+        <div class="filtros" id="filtrosProductos">
+          <button class="filtro active" data-cat="todos" onclick="filtrar(this)">Todos</button>
+        </div>
+
+        <div class="tabla-wrap">
+          <div id="loadingAdmin" class="loading-msg">Cargando productos...</div>
+          <table class="tabla" id="tablaProductos" style="display:none">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Tamaño</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ SECCIÓN CATEGORÍAS ══ -->
+      <div id="seccionCategorias" style="display:none">
+        <div class="toolbar">
+          <h2 class="toolbar__title">Categorías</h2>
+          <button class="add-btn" onclick="abrirModalCategoria()">+ Nueva categoría</button>
+        </div>
+
+        <div id="loadingCategorias" class="loading-msg">Cargando categorías...</div>
+        <div class="cat-grid" id="catGrid" style="display:none"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ══ MODAL PRODUCTO ══ -->
+  <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()"></div>
+
+  <div class="modal" id="modal">
+    <div class="modal__header">
+      <span class="modal__title" id="modalTitle">Nuevo producto</span>
+      <button class="drawer__close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal__body">
+
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" type="text" id="mNombre" placeholder="Ej: AKY" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tamaño</label>
+        <input class="form-input" type="text" id="mTamano" placeholder="Ej: Pequeña (opcional)" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción</label>
+        <textarea class="form-input form-textarea" id="mDescripcion" placeholder="Descripción del producto..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Precio</label>
+          <input class="form-input" type="number" id="mPrecio" placeholder="Ej: 9500" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Orden</label>
+        <input class="form-input" type="number" id="mOrden" placeholder="Ej: 1" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <select class="form-input" id="mCategoria"></select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Imagen</label>
+        <label class="upload-label" for="mImagen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Elegir imagen
+        </label>
+        <input type="file" id="mImagen" accept="image/*" style="display:none" onchange="previewImagen(this)" />
+        <img id="mImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+      </div>
+
+      <p class="modal-error" id="modalError"></p>
+      <button class="submit-btn" id="modalBtn" onclick="guardarProducto()">Guardar</button>
+    </div>
+  </div>
+
+  <!-- ══ MODAL CATEGORÍA ══ -->
+  <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
+
+  <div class="modal" id="modalCategoria">
+    <div class="modal__header">
+      <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
+      <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
+    </div>
+    <div class="modal__body">
+
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Imagen</label>
+        <label class="upload-label" for="cImagen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Elegir imagen
+        </label>
+        <input type="file" id="cImagen" accept="image/*" style="display:none" onchange="previewImagenCategoria(this)" />
+        <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+      </div>
+
+      <p class="modal-error" id="modalCategoriaError"></p>
+      <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabaseConfig.js"></script>
+  <script src="admin.js"></script>
+
+</body>
+</html>

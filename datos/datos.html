@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tu pedido — KAPÉ</title>
+  <link rel="stylesheet" href="../carrito/carrito.css" />
+  <link rel="stylesheet" href="datos.css" />
+</head>
+<body>
+
+  <header class="header">
+    <a href="javascript:history.back()" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Volver
+    </a>
+    <a href="../index.html" class="header__logo">
+      <span class="logo-k" aria-hidden="true">K</span>
+      <div class="logo-text">
+        <span class="logo-name">Kapé</span>
+        <span class="logo-sub">Lomitos Árabes</span>
+      </div>
+    </a>
+    <!-- Sin carrito en esta página, ya están confirmando -->
+    <div style="width:80px"></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span class="hero__eyebrow">Casi listo</span>
+      <h1 class="hero__title">Tu <span>pedido</span></h1>
+    </div>
+  </section>
+
+  <div class="page">
+
+    <!-- ══ RESUMEN ══ -->
+    <div class="resumen">
+      <div class="resumen__header">Resumen</div>
+      <div class="resumen__items" id="resumenItems"></div>
+      <div class="resumen__total">
+        <span class="resumen__total-label">Total</span>
+        <span class="resumen__total-price" id="resumenTotal">$0</span>
+      </div>
+    </div>
+
+    <!-- ══ FORMULARIO ══ -->
+    <div class="formulario">
+
+      <!-- Nombre y apellido -->
+      <div class="form-group">
+        <label class="form-label" for="nombreInput">Nombre y apellido</label>
+        <input class="form-input" type="text" id="nombreInput"
+               placeholder="Ej: Juan Pérez" autocomplete="name" />
+      </div>
+
+      <!-- Entrega -->
+      <div class="form-group">
+        <span class="form-label">¿Cómo lo recibís?</span>
+        <div class="radio-group">
+
+          <label class="radio-option" id="opt-retiro" onclick="seleccionar('entrega','retiro', this)">
+            <input type="radio" name="entrega" value="retiro" />
+            <span class="radio-dot"></span>
+            <span class="radio-label">Retiro en local</span>
+            <span class="radio-sub">Av. Siempre Viva 742</span>
+          </label>
+
+          <label class="radio-option" id="opt-envio" onclick="seleccionar('entrega','envio', this)">
+            <input type="radio" name="entrega" value="envio" />
+            <span class="radio-dot"></span>
+            <span class="radio-label">Envío a domicilio</span>
+          </label>
+
+        </div>
+
+        <!-- Dirección (aparece solo si elige envío) -->
+        <div class="campo-direccion" id="campoDireccion">
+          <input class="form-input" type="text" id="direccionInput"
+                 placeholder="Dirección completa" autocomplete="street-address" />
+        </div>
+      </div>
+
+      <!-- Pago -->
+      <div class="form-group">
+        <span class="form-label">Método de pago</span>
+        <div class="radio-group">
+
+          <label class="radio-option" id="opt-efectivo" onclick="seleccionar('pago','efectivo', this)">
+            <input type="radio" name="pago" value="efectivo" />
+            <span class="radio-dot"></span>
+            <span class="radio-label">Efectivo</span>
+          </label>
+
+          <label class="radio-option" id="opt-qr" onclick="seleccionar('pago','qr', this)">
+            <input type="radio" name="pago" value="qr" />
+            <span class="radio-dot"></span>
+            <span class="radio-label">QR</span>
+          </label>
+
+          <label class="radio-option" id="opt-transferencia" onclick="seleccionar('pago','transferencia', this)">
+            <input type="radio" name="pago" value="transferencia" />
+            <span class="radio-dot"></span>
+            <span class="radio-label">Transferencia</span>
+          </label>
+
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="enviarPedido()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07
+                   A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.9 1.18 2 2 0 012.88.02
+                   h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 7.91
+                   a16 16 0 006 6l1.06-1.06a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7
+                   A2 2 0 0122 16.92z"/>
+        </svg>
+        Enviar por WhatsApp
+      </button>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <span>© 2026 Kapé · Villa María</span>
+    <a href="https://instagram.com/kape.vm" target="_blank" rel="noopener">Instagram</a>
+  </footer>
+
+  <script src="../carrito/carrito.js"></script>
+  <script>
+    // ── Estado del formulario ──
+    const form = { entrega: null, pago: null };
+
+    // ── Renderizar resumen ──
+    function renderResumen() {
+      const cart  = getCart();
+      const items = Object.values(cart);
+      const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+      const el    = document.getElementById('resumenItems');
+      const tel   = document.getElementById('resumenTotal');
+
+      if (!items.length) {
+        el.innerHTML = '<p style="padding:.8rem 0;color:rgba(240,237,232,.3);font-size:.82rem">El carrito está vacío.</p>';
+        tel.textContent = '$0';
+        return;
+      }
+
+      el.innerHTML = items.map(i => `
+        <div class="resumen-item">
+          <span class="resumen-item__name">
+            ${i.qty}× ${i.name}
+            <span class="resumen-item__size">${i.size}</span>
+          </span>
+          <span class="resumen-item__price">${formatPrice(i.price * i.qty)}</span>
+        </div>
+      `).join('');
+
+      tel.textContent = formatPrice(total);
+    }
+
+    // ── Selección radio ──
+    function seleccionar(grupo, valor, el) {
+      // deselecciona opciones del mismo grupo
+      document.querySelectorAll(`input[name="${grupo}"]`).forEach(r => {
+        const label = r.closest('.radio-option');
+        label.classList.remove('selected', 'selected-red');
+      });
+
+      el.classList.add('selected');
+      form[grupo] = valor;
+
+      // mostrar/ocultar dirección
+      if (grupo === 'entrega') {
+        const campo = document.getElementById('campoDireccion');
+        campo.classList.toggle('visible', valor === 'envio');
+        if (valor !== 'envio') document.getElementById('direccionInput').value = '';
+      }
+    }
+
+    // ── Enviar pedido ──
+    function enviarPedido() {
+      const nombre = document.getElementById('nombreInput').value.trim();
+      if (!nombre) return showToast('Ingresá tu nombre');
+      if (!form.entrega) return showToast('Elegí cómo recibir el pedido');
+      if (form.entrega === 'envio') {
+        const dir = document.getElementById('direccionInput').value.trim();
+        if (!dir) return showToast('Ingresá tu dirección');
+      }
+      if (!form.pago) return showToast('Elegí un método de pago');
+
+      const cart  = getCart();
+      const items = Object.values(cart);
+      if (!items.length) return showToast('El carrito está vacío');
+
+      const lineas = items.map(i =>
+        `- ${i.qty}x ${i.name} (${i.size}) = ${formatPrice(i.price * i.qty)}`
+      ).join('\n');
+
+      const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+      const entregaTexto = form.entrega === 'retiro'
+        ? 'Retiro en local'
+        : `Envío a: ${document.getElementById('direccionInput').value.trim()}`;
+
+      const pagoTexto = { efectivo: 'Efectivo', qr: 'QR', transferencia: 'Transferencia' }[form.pago];
+
+      const msg = encodeURIComponent(
+        `¡Hola! 👋 Quiero hacer un pedido\n\n` +
+        `*Cliente:* ${nombre}\n\n` +
+        `*Pedido:*\n${lineas}\n\n` +
+        `*Total:* ${formatPrice(total)}\n` +
+        `*Entrega:* ${entregaTexto}\n` +
+        `*Pago:* ${pagoTexto}`
+      );
+
+      window.open(`https://wa.me/5493534214780?text=${msg}`, '_blank');
+    }
+
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', renderResumen);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Categoría — KAPÉ</title>
+  <link rel="stylesheet" href="lomitos.css" />
+</head>
+<body>
+
+  <header class="header">
+    <a href="../index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Volver
+    </a>
+    <a href="../index.html" class="header__logo">
+      <span class="logo-k" aria-hidden="true">K</span>
+      <span class="logo-name">Kapé</span>
+    </a>
+    <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="cart-total" id="cartTotal">$0</span>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span class="hero__eyebrow">Nuestro menú</span>
+      <h1 class="hero__title" id="categoriaNombre">Cargando...</h1>
+    </div>
+  </section>
+
+  <main class="menu">
+    <div id="productosList"></div>
+    <div id="loadingMsg" class="loading-msg">Cargando productos...</div>
+  </main>
+
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer__header">
+      <span class="drawer__title">Tu pedido</span>
+      <button class="drawer__close" onclick="toggleDrawer()">✕</button>
+    </div>
+    <div class="drawer__items" id="drawerItems">
+      <p class="drawer__empty">Tu carrito está vacío.</p>
+    </div>
+    <div class="drawer__footer">
+      <div class="drawer__subtotal">
+        <span class="drawer__subtotal-label">Total</span>
+        <span class="drawer__subtotal-price" id="drawerTotal">$0</span>
+      </div>
+      <button class="checkout-btn" onclick="handleCheckout()">Confirmar pedido</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <span>© 2026 Kapé · Villa María</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabaseConfig.js"></script>
+  <script src="../carrito/carrito.js"></script>
+  <script src="categoria.js"></script>
+
+</body>
+</html>

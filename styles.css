@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:  #0D0D0D;
+  --smoke:  #F0EDE8;
+  --red:    #C8102E;
+  --navy:   #1A237E;
+  --gold:   #C9A84C;
+  --font-d: 'Barlow Condensed', sans-serif;
+  --font-b: 'Barlow', sans-serif;
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--black);
+  color: var(--smoke);
+  font-family: var(--font-b);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+
+.cart-btn {
+  position: relative;
+  background: none;
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 6px;
+  padding: .45rem .7rem;
+  cursor: pointer;
+  color: var(--smoke);
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  transition: border-color .2s, background .2s, opacity .2s;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(.9);
+}
+
+.cart-btn.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 68px;
+  border-bottom: 1px solid rgba(201,168,76,.2);
+  flex-shrink: 0;
+}
+
+.logo { display: flex; align-items: center; gap: .7rem; }
+
+.logo-k {
+  font-family: var(--font-d);
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(to bottom, var(--red) 33%, #fff 33% 66%, var(--navy) 66%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.logo-name {
+  font-family: var(--font-d);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  display: block;
+}
+
+.logo-sub {
+  font-size: .62rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+}
+
+.header__nav a {
+  font-family: var(--font-d);
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(240,237,232,.6);
+  text-decoration: none;
+  margin-left: 2rem;
+  transition: color .2s;
+}
+.header__nav a:hover { color: var(--gold); }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 3rem 2.5rem 2.5rem;
+  text-align: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #0a0a18 0%, var(--black) 70%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(201,168,76,.03) 0 1px,
+    transparent 1px 14px
+  );
+}
+
+.hero__line { position: relative; margin-bottom: .6rem; }
+
+.hero__eyebrow {
+  font-family: var(--font-d);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .4em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hero__title {
+  font-family: var(--font-d);
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: .9;
+  color: var(--smoke);
+  position: relative;
+}
+.hero__title span { color: var(--red); }
+
+.hero__subtitle {
+  margin-top: .8rem;
+  font-size: .85rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(240,237,232,.35);
+  position: relative;
+}
+
+/* ── GRID ── */
+.grid-section {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 2.5rem 2rem;
+}
+
+/* ── CARD ── */
+.card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,.07);
+  transition: transform .3s cubic-bezier(.2,.8,.3,1), box-shadow .3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 24px 56px rgba(0,0,0,.7), 0 0 0 1px rgba(201,168,76,.3);
+}
+
+.card__thumb {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.card__thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(.6) saturate(.85);
+  transition: transform .4s ease, filter .4s;
+  display: block;
+}
+
+.card:hover .card__thumb img {
+  transform: scale(1.06);
+  filter: brightness(.45) saturate(1.1);
+}
+
+.card__thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, #141414 100%);
+}
+
+/* gold left bar */
+.card__bar {
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 3px;
+  background: var(--gold);
+  border-radius: 0 2px 2px 0;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform .3s ease;
+  z-index: 2;
+}
+.card:hover .card__bar { transform: scaleY(1); }
+
+.card__body {
+  padding: 1.6rem 1.8rem 2rem;
+  flex-shrink: 0;
+}
+
+.card__category {
+  font-family: var(--font-d);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: .4rem;
+}
+
+.card__title {
+  font-family: var(--font-d);
+  font-size: 2.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  line-height: 1;
+  color: var(--smoke);
+  margin-bottom: 1.2rem;
+}
+
+.card__cta {
+  font-family: var(--font-d);
+  font-size: .9rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(240,237,232,.45);
+  transition: color .2s;
+}
+.card:hover .card__cta { color: var(--gold); }
+
+.card--salsas .card__bar { background: var(--red); }
+
+/* ── FOOTER ── */
+.footer {
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding: 1.2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: .75rem;
+  color: rgba(240,237,232,.3);
+  flex-shrink: 0;
+}
+.footer a { color: var(--gold); text-decoration: none; opacity: .7; }
+.footer a:hover { opacity: 1; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .grid-section { grid-template-columns: 1fr; padding: 1rem 1rem 1.5rem; }
+  .header { padding: 0 1.2rem; }
+  .header__nav { display: none; }
+  .hero { padding: 2rem 1.2rem 1.5rem; }
+  .card__thumb { min-height: 220px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card__thumb img { transition: none; }
+}
+
+/* ── AJUSTES DEL HEADER PARA MÓVIL ── */
+.header {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap; /* Evita que el enlace de Instagram baje a otra línea */
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  overflow: hidden; /* Evita scroll horizontal indeseado */
+}
+
+.header__nav {
+  display: block !important; /* Fuerza a que siempre sea visible */
+  white-space: nowrap; /* Evita que la palabra se corte en dos líneas */
+  flex-shrink: 0; /* Evita que el logo aplaste al texto de Instagram */
+}
+
+.header__nav a {
+  color: var(--gold, #C9A84C); /* Usa tu color dorado o cambialo al que prefieras */
+  text-decoration: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+/* Ajustes finos para pantallas de celulares muy pequeños */
+@media (max-width: 480px) {
+  .header {
+    padding: 0.8rem 1rem;
+  }
+  
+  .header__nav a {
+    font-size: 0.8rem; /* Achicamos un pelín el texto de Instagram */
+  }
+
+  /* Si el logo es muy grande, lo achicamos apenas para dar espacio */
+  .logo-k {
+    font-size: 1.5rem;
+  }
+  
+  .logo-name {
+    font-size: 1.1rem;
+  }
+}
