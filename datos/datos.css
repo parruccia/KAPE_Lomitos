@@ -260,7 +260,7 @@
   margin-top: 0;
 }
 .campo-direccion.visible {
-  max-height: 100px;
+  max-height: 260px;
   opacity: 1;
   margin-top: .2rem;
 }
@@ -445,14 +445,16 @@
   text-decoration: underline;
 }
 
-.radio-maps-btn {
+.radio-maps-btn,
+.radio-maps-btn:link,
+.radio-maps-btn:visited {
   display: flex;
   align-items: center;
   gap: .3rem;
   margin-left: auto;
   flex-shrink: 0;
-  background: rgba(201,168,76,.08);
-  border: 1px solid rgba(201,168,76,.3);
+  background: rgba(240,237,232,.05);
+  border: 1px solid rgba(240,237,232,.2);
   border-radius: 20px;
   padding: .35rem .7rem;
   font-family: var(--font-d);
@@ -460,18 +462,32 @@
   font-weight: 700;
   letter-spacing: .05em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--smoke);
   text-decoration: none;
-  transition: background .2s, border-color .2s;
+  transition: background .2s, border-color .2s, color .2s;
 }
 .radio-maps-btn:hover {
-  background: rgba(201,168,76,.15);
+  background: rgba(201,168,76,.12);
   border-color: var(--gold);
+  color: var(--gold);
 }
 .radio-maps-btn svg {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
+}
+.radio-maps-btn__external {
+  width: 11px;
+  height: 11px;
+  opacity: .6;
+}
+
+@media (hover: hover) {
+  .radio-maps-btn:hover {
+    background: rgba(201,168,76,.12);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
 }
 
 .error-banner {
@@ -506,4 +522,12 @@
   letter-spacing: .1em;
   text-transform: uppercase;
   text-decoration: none;
+}
+
+.campo-direccion__campo {
+  margin-top: .5rem;
+}
+
+.campo-direccion__textarea {
+  resize: vertical;
 }

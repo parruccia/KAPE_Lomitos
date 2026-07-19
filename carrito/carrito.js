@@ -212,13 +212,30 @@ function zoomImagen(src) {
     overlay = document.createElement('div');
     overlay.id = 'zoomOverlay';
     overlay.className = 'zoom-overlay';
-    overlay.onclick = () => overlay.classList.remove('open');
+    overlay.onclick = () => cerrarZoom(true);
     overlay.innerHTML = '<img id="zoomImg" src="" alt="Zoom" />';
     document.body.appendChild(overlay);
   }
   document.getElementById('zoomImg').src = src;
   overlay.classList.add('open');
+
+  history.pushState({ zoom: true }, '');
 }
+
+function cerrarZoom(desdeClick) {
+  const overlay = document.getElementById('zoomOverlay');
+  if (!overlay || !overlay.classList.contains('open')) return;
+
+  overlay.classList.remove('open');
+
+  // Si se cerró tocando afuera (no con el botón atrás),
+  // "gastamos" la entrada del historial que agregamos al abrir.
+  if (desdeClick) history.back();
+}
+
+window.addEventListener('popstate', () => {
+  cerrarZoom(false);
+});
 
 function handleCheckout() {
   if (!tiendaAbierta) {

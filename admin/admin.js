@@ -333,7 +333,6 @@ function renderCategorias() {
       ${c.imagen ? `<img src="${c.imagen}" class="cat-card__img" alt="${c.nombre}" />` : '<div class="cat-card__img cat-card__img--empty"></div>'}
       <div class="cat-card__body">
         <span class="cat-card__nombre">${c.nombre}</span>
-        <span class="cat-card__slug">${c.slug}</span>
       </div>
       <div class="cat-card__acciones">
         <button class="accion-btn flecha" onclick="moverCategoria('${c.id}', -1)" ${i === 0 ? 'disabled' : ''}>↑</button>
