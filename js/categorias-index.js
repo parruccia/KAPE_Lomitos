@@ -1,15 +1,10 @@
-// ── Categorías con página propia (las viejas, hechas a mano) ──
-const paginasFijas = {
-  lomitos: 'subPáginas/index.lomitos.html',
-  salsas:  'subPáginas/index.salsas.html'
-};
-
 async function cargarCategoriasIndex() {
   const { data, error } = await db
     .from('categorias')
     .select('*')
+    .eq('visible_en_menu', true)
     .order('orden');
-
+    
   const grid    = document.getElementById('gridCategorias');
   const loading = document.getElementById('loadingCategoriasIndex');
 
@@ -21,7 +16,7 @@ async function cargarCategoriasIndex() {
   }
 
   grid.innerHTML = data.map(c => {
-    const href = paginasFijas[c.slug] || `subPáginas/categoria.html?slug=${c.slug}`;
+    const href = `subPáginas/categoria.html?slug=${c.slug}`;
     return `
       <a href="${href}" class="card">
         <div class="card__bar" aria-hidden="true"></div>

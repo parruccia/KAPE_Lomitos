@@ -8,6 +8,10 @@ let editandoId        = null;
 
 let todasLasCategorias  = [];
 let editandoCategoriaId = null;
+let todosLosHorarios = [];
+
+let todosLosCupones = [];
+let editandoCuponId = null;
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
@@ -57,7 +61,11 @@ function cambiarSeccion(btn) {
   const sec = btn.dataset.sec;
   document.getElementById('seccionProductos').style.display  = sec === 'productos'  ? 'block' : 'none';
   document.getElementById('seccionCategorias').style.display = sec === 'categorias' ? 'block' : 'none';
+  document.getElementById('seccionHorarios').style.display    = sec === 'horarios'  ? 'block' : 'none';
+  document.getElementById('seccionCupones').style.display     = sec === 'cupones'   ? 'block' : 'none';
   if (sec === 'categorias' && !todasLasCategorias.length) cargarCategorias();
+  if (sec === 'horarios' && !todosLosHorarios.length) cargarHorarios();
+  if (sec === 'cupones' && !todosLosCupones.length) cargarCupones();
 }
 
 // ── CARGAR PRODUCTOS ──
@@ -184,6 +192,8 @@ function abrirModal(id = null) {
     document.getElementById('mPrecio').value      = p.precio;
     document.getElementById('mCategoria').value   = p.categoria;
     document.getElementById('mOrden').value       = p.orden;
+    document.getElementById('mSalsasIncluidas').value   = p.salsas_incluidas || 0;
+    document.getElementById('mToppingsIncluidos').value = p.toppings_incluidos || 0;
     if (p.imagen) { preview.src = p.imagen; preview.style.display = 'block'; }
   } else {
     title.textContent = 'Nuevo producto';
@@ -193,6 +203,8 @@ function abrirModal(id = null) {
     document.getElementById('mPrecio').value      = '';
     document.getElementById('mCategoria').value   = 'lomitos';
     document.getElementById('mOrden').value       = '';
+    document.getElementById('mSalsasIncluidas').value   = 0;
+    document.getElementById('mToppingsIncluidos').value = 0;
   }
 
   modal.classList.add('open');
@@ -235,6 +247,8 @@ async function guardarProducto() {
   const precio      = parseInt(document.getElementById('mPrecio').value);
   const categoria   = document.getElementById('mCategoria').value;
   const orden       = parseInt(document.getElementById('mOrden').value) || 0;
+  const salsas_incluidas   = parseInt(document.getElementById('mSalsasIncluidas').value) || 0;
+  const toppings_incluidos = parseInt(document.getElementById('mToppingsIncluidos').value) || 0;
   const fileInput   = document.getElementById('mImagen');
   const errorEl     = document.getElementById('modalError');
   const btn         = document.getElementById('modalBtn');
@@ -246,7 +260,7 @@ async function guardarProducto() {
   btn.disabled = true;
   btn.textContent = 'Guardando...';
 
-  const datos = { nombre, tamano, descripcion, precio, categoria, orden };
+  const datos = { nombre, tamano, descripcion, precio, categoria, orden, salsas_incluidas, toppings_incluidos };
 
   if (fileInput.files[0]) {
     btn.textContent = 'Subiendo imagen...';
@@ -331,6 +345,89 @@ function renderCategorias() {
   `).join('');
 }
 
+// ══════════════════════════════════════
+//  HORARIOS
+// ══════════════════════════════════════
+
+const NOMBRES_DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+// ── CARGAR HORARIOS ──
+async function cargarHorarios() {
+  const { data, error } = await db.from('horarios').select('*').order('dia_semana');
+
+  document.getElementById('loadingHorarios').style.display = 'none';
+  document.getElementById('horariosLista').style.display = 'block';
+
+  if (error) { showToast('Error al cargar horarios'); return; }
+
+  todosLosHorarios = data;
+  renderHorarios();
+}
+
+// ── RENDER HORARIOS ──
+function renderHorarios() {
+  const cont = document.getElementById('horariosLista');
+
+  cont.innerHTML = todosLosHorarios.map(h => `
+    <div class="horario-card" data-id="${h.id}">
+      <div class="horario-card__header">
+        <span class="horario-card__dia">${NOMBRES_DIAS[h.dia_semana]}</span>
+        <label class="horario-cerrado">
+          <input type="checkbox" ${h.cerrado ? 'checked' : ''} onchange="toggleCerrado('${h.id}', this.checked)" />
+          Cerrado todo el día
+        </label>
+      </div>
+     <div class="horario-card__franjas" style="${h.cerrado ? 'display:none' : ''}">
+        <div class="horario-franja">
+          <span class="horario-franja__label">Turno 1</span>
+          <input type="time" class="form-input" id="ap1-${h.id}" value="${h.apertura1 || ''}" />
+          <span>a</span>
+          <input type="time" class="form-input" id="ci1-${h.id}" value="${h.cierre1 || ''}" />
+        </div>
+        <div class="horario-franja">
+          <span class="horario-franja__label">Turno 2</span>
+          <input type="time" class="form-input" id="ap2-${h.id}" value="${h.apertura2 || ''}" />
+          <span>a</span>
+          <input type="time" class="form-input" id="ci2-${h.id}" value="${h.cierre2 || ''}" />
+          <button type="button" class="accion-btn eliminar" title="Quitar turno 2" onclick="quitarTurno2('${h.id}')">✕</button>
+        </div>
+        <button class="accion-btn editar" onclick="guardarHorario('${h.id}')">Guardar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── TOGGLE CERRADO (marca el día entero como cerrado) ──
+async function toggleCerrado(id, cerrado) {
+  const { error } = await db.from('horarios').update({ cerrado }).eq('id', id);
+  if (error) { showToast('Error al actualizar'); return; }
+  await cargarHorarios();
+  showToast(cerrado ? 'Día marcado como cerrado' : 'Día reactivado');
+}
+
+// ── GUARDAR HORARIO (turnos de un día) ──
+async function guardarHorario(id) {
+  const apertura1 = document.getElementById(`ap1-${id}`).value || null;
+  const cierre1   = document.getElementById(`ci1-${id}`).value || null;
+  const apertura2 = document.getElementById(`ap2-${id}`).value || null;
+  const cierre2   = document.getElementById(`ci2-${id}`).value || null;
+
+  const { error } = await db.from('horarios')
+    .update({ apertura1, cierre1, apertura2, cierre2 })
+    .eq('id', id);
+
+  if (error) { showToast('Error al guardar horario'); return; }
+  showToast('Horario actualizado');
+  await cargarHorarios();
+}
+
+// ── QUITAR TURNO 2 (vacía los campos, sin guardar todavía) ──
+function quitarTurno2(id) {
+  document.getElementById(`ap2-${id}`).value = '';
+  document.getElementById(`ci2-${id}`).value = '';
+  showToast('Turno 2 vaciado. Tocá "Guardar" para confirmar.');
+}
+
 // ── MOVER CATEGORÍA (arriba/abajo) ──
 async function moverCategoria(id, direccion) {
   const index = todasLasCategorias.findIndex(c => c.id === id);
@@ -397,10 +494,16 @@ function abrirModalCategoria(id = null) {
     const c = todasLasCategorias.find(x => x.id === id);
     title.textContent = 'Editar categoría';
     document.getElementById('cNombre').value = c.nombre;
+    document.getElementById('cPersonalizable').checked = c.personalizable || false;
+    document.getElementById('cVisibleMenu').checked = c.visible_en_menu !== false;
+    document.getElementById('cPrecioExtra').value = c.precio_extra || '';
     if (c.imagen) { preview.src = c.imagen; preview.style.display = 'block'; }
   } else {
     title.textContent = 'Nueva categoría';
     document.getElementById('cNombre').value = '';
+    document.getElementById('cPersonalizable').checked = false;
+    document.getElementById('cVisibleMenu').checked = true;
+    document.getElementById('cPrecioExtra').value = '';
   }
 
   document.getElementById('modalCategoria').classList.add('open');
@@ -428,6 +531,10 @@ function previewImagenCategoria(input) {
 // ── GUARDAR CATEGORÍA ──
 async function guardarCategoria() {
   const nombre    = document.getElementById('cNombre').value.trim();
+  const personalizable = document.getElementById('cPersonalizable').checked;
+  const visible_en_menu = document.getElementById('cVisibleMenu').checked;
+  const precioExtraVal = document.getElementById('cPrecioExtra').value;
+  const precio_extra = precioExtraVal ? parseInt(precioExtraVal) : null;
   const fileInput = document.getElementById('cImagen');
   const errorEl   = document.getElementById('modalCategoriaError');
   const btn       = document.getElementById('modalCategoriaBtn');
@@ -438,7 +545,7 @@ async function guardarCategoria() {
   btn.disabled = true;
   btn.textContent = 'Guardando...';
 
-  const datos = { nombre };
+  const datos = { nombre, personalizable, visible_en_menu, precio_extra };
 
   if (!editandoCategoriaId) {
     datos.slug  = generarSlug(nombre);
@@ -499,6 +606,203 @@ async function eliminarCategoria(id, nombre) {
 // ── HELPERS ──
 function formatPrice(n) {
   return '$' + n.toLocaleString('es-AR');
+}
+
+// ── RENDER TABLA DE CUPONES ──
+function renderCupones() {
+  const tbody = document.getElementById('tablaCuponesBody');
+
+  if (!todosLosCupones.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:rgba(240,237,232,.3)">No hay cupones cargados.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = todosLosCupones.map(c => {
+    const valorTexto = c.tipo === 'porcentaje' ? `${c.valor}%` : formatPrice(c.valor);
+    const vencTexto  = c.vencimiento ? new Date(c.vencimiento + 'T00:00:00').toLocaleDateString('es-AR') : '—';
+    const usosTexto  = c.usos_maximos ? `${c.usos_actuales} / ${c.usos_maximos}` : `${c.usos_actuales} / ∞`;
+
+    const vencido = c.vencimiento && new Date(c.vencimiento + 'T23:59:59') < new Date();
+    const agotado  = c.usos_maximos && c.usos_actuales >= c.usos_maximos;
+    const estadoTexto = !c.activo ? 'Inactivo' : vencido ? 'Vencido' : agotado ? 'Agotado' : 'Activo';
+
+    return `
+      <tr>
+        <td class="td-nombre" data-label="Código"><strong>${c.codigo}</strong></td>
+        <td data-label="Tipo">${c.tipo === 'porcentaje' ? 'Porcentaje' : 'Fijo'}</td>
+        <td data-label="Valor">${valorTexto}</td>
+        <td data-label="Vencimiento">${vencTexto}</td>
+        <td data-label="Usos">${usosTexto}</td>
+        <td data-label="Estado"><button class="estado-btn ${c.activo ? 'activo' : 'inactivo'}" onclick="toggleEstadoCupon(${c.id}, ${!c.activo})">${estadoTexto}</button></td>
+        <td data-label="" class="acciones">
+          <button class="accion-btn" onclick="abrirModalCupon(${c.id})">Editar</button>
+          <button class="accion-btn accion-btn--danger" onclick="eliminarCupon(${c.id})">Eliminar</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ── CARGAR CUPONES ──
+async function cargarCupones() {
+  const { data, error } = await db.from('cupones').select('*').order('creado_en', { ascending: false });
+
+  document.getElementById('loadingCupones').style.display = 'none';
+  document.getElementById('tablaCupones').style.display = 'table';
+
+  if (error) { showToast('Error al cargar cupones'); return; }
+
+  todosLosCupones = data;
+  renderCupones();
+}
+
+// ── RENDER TABLA DE CUPONES ──
+function renderCupones() {
+  const tbody = document.getElementById('tablaCuponesBody');
+
+  if (!todosLosCupones.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="td-vacio" style="padding:2rem;color:rgba(240,237,232,.3)">No hay cupones cargados.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = todosLosCupones.map(c => {
+    const valorTexto = c.tipo === 'porcentaje' ? `${c.valor}%` : formatPrice(c.valor);
+    const vencTexto  = c.vencimiento ? new Date(c.vencimiento + 'T00:00:00').toLocaleDateString('es-AR') : '—';
+    const usosTexto  = c.usos_maximos ? `${c.usos_actuales} / ${c.usos_maximos}` : `${c.usos_actuales} / ∞`;
+
+    const vencido = c.vencimiento && new Date(c.vencimiento + 'T23:59:59') < new Date();
+    const agotado  = c.usos_maximos && c.usos_actuales >= c.usos_maximos;
+    const estadoTexto = !c.activo ? 'Inactivo' : vencido ? 'Vencido' : agotado ? 'Agotado' : 'Activo';
+
+    return `
+  <tr>
+    <td data-label="Código"><strong>${c.codigo}</strong></td>
+    <td data-label="Tipo">${c.tipo === 'porcentaje' ? 'Porcentaje' : 'Fijo'}</td>
+    <td data-label="Valor">${valorTexto}</td>
+    <td data-label="Vencimiento">${vencTexto}</td>
+    <td data-label="Usos">${usosTexto}</td>
+    <td data-label="Estado"><button class="estado-btn ${c.activo ? 'activo' : 'inactivo'}" onclick="toggleEstadoCupon(${c.id}, ${!c.activo})">${estadoTexto}</button></td>
+    <td data-label="Acciones" class="acciones">
+      <button class="accion-btn" onclick="abrirModalCupon(${c.id})">Editar</button>
+      <button class="accion-btn accion-btn--danger" onclick="eliminarCupon(${c.id})">Eliminar</button>
+    </td>
+  </tr>
+`;
+  }).join('');
+}
+
+// ── ABRIR MODAL CUPÓN ──
+function abrirModalCupon(id = null) {
+  editandoCuponId = id;
+  const title   = document.getElementById('modalCuponTitle');
+  const errorEl = document.getElementById('modalCuponError');
+
+  errorEl.textContent = '';
+
+  if (id) {
+    const c = todosLosCupones.find(x => x.id === id);
+    title.textContent = 'Editar cupón';
+    document.getElementById('cuCodigo').value = c.codigo;
+    document.getElementById('cuTipo').value = c.tipo;
+    document.getElementById('cuValor').value = c.valor;
+    document.getElementById('cuVencimiento').value = c.vencimiento || '';
+    document.getElementById('cuUsosMaximos').value = c.usos_maximos || '';
+    document.getElementById('cuActivo').checked = c.activo;
+  } else {
+    title.textContent = 'Nuevo cupón';
+    document.getElementById('cuCodigo').value = '';
+    document.getElementById('cuTipo').value = 'porcentaje';
+    document.getElementById('cuValor').value = '';
+    document.getElementById('cuVencimiento').value = '';
+    document.getElementById('cuUsosMaximos').value = '';
+    document.getElementById('cuActivo').checked = true;
+  }
+
+  actualizarLabelValorCupon();
+
+  document.getElementById('modalCupon').classList.add('open');
+  document.getElementById('modalOverlayCupon').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+// ── CERRAR MODAL CUPÓN ──
+function cerrarModalCupon() {
+  document.getElementById('modalCupon').classList.remove('open');
+  document.getElementById('modalOverlayCupon').classList.remove('open');
+  document.body.style.overflow = '';
+  editandoCuponId = null;
+}
+
+// ── LABEL DINÁMICO SEGÚN TIPO ──
+function actualizarLabelValorCupon() {
+  const tipo = document.getElementById('cuTipo').value;
+  document.getElementById('cuValorLabel').textContent = tipo === 'porcentaje' ? 'Valor (%)' : 'Valor ($)';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const tipoSelect = document.getElementById('cuTipo');
+  if (tipoSelect) tipoSelect.addEventListener('change', actualizarLabelValorCupon);
+});
+
+// ── GUARDAR CUPÓN ──
+async function guardarCupon() {
+  const codigo = document.getElementById('cuCodigo').value.trim().toUpperCase();
+  const tipo   = document.getElementById('cuTipo').value;
+  const valor  = parseFloat(document.getElementById('cuValor').value);
+  const vencimiento = document.getElementById('cuVencimiento').value || null;
+  const usosMaximosVal = document.getElementById('cuUsosMaximos').value;
+  const usos_maximos = usosMaximosVal ? parseInt(usosMaximosVal) : null;
+  const activo = document.getElementById('cuActivo').checked;
+  const errorEl = document.getElementById('modalCuponError');
+  const btn     = document.getElementById('modalCuponBtn');
+
+  errorEl.textContent = '';
+
+  if (!codigo) { errorEl.textContent = 'El código es obligatorio.'; return; }
+  if (!valor || valor <= 0) { errorEl.textContent = 'Ingresá un valor válido.'; return; }
+  if (tipo === 'porcentaje' && valor > 100) { errorEl.textContent = 'El porcentaje no puede superar 100.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  const datos = { codigo, tipo, valor, vencimiento, usos_maximos, activo };
+
+  let error;
+  if (editandoCuponId) {
+    ({ error } = await db.from('cupones').update(datos).eq('id', editandoCuponId));
+  } else {
+    ({ error } = await db.from('cupones').insert(datos));
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Guardar';
+
+  if (error) {
+    errorEl.textContent = error.code === '23505' ? 'Ya existe un cupón con ese código.' : 'Error al guardar. Intentá de nuevo.';
+    return;
+  }
+
+  cerrarModalCupon();
+  showToast(editandoCuponId ? 'Cupón actualizado' : 'Cupón creado');
+  await cargarCupones();
+}
+
+// ── ELIMINAR CUPÓN ──
+async function eliminarCupon(id) {
+  if (!confirm('¿Seguro que querés eliminar este cupón?')) return;
+
+  const { error } = await db.from('cupones').delete().eq('id', id);
+  if (error) { showToast('Error al eliminar'); return; }
+
+  showToast('Cupón eliminado');
+  await cargarCupones();
+}
+
+// ── TOGGLE ESTADO CUPÓN ──
+async function toggleEstadoCupon(id, nuevoEstado) {
+  const { error } = await db.from('cupones').update({ activo: nuevoEstado }).eq('id', id);
+  if (error) { showToast('Error al actualizar estado'); return; }
+  showToast(nuevoEstado ? 'Cupón activado' : 'Cupón desactivado');
+  await cargarCupones();
 }
 
 let toastTimer;

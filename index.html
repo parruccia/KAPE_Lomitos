@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KAPÉ — Lomitos Árabes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Distressed&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="carrito/carrito.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
 
@@ -35,33 +39,35 @@
     <div class="logo">
       <span class="logo-k" aria-hidden="true">K</span>
       <div class="logo-text">
-        <span class="logo-name">Kapé</span>
-        <span class="logo-sub">Lomitos Árabes</span>
       </div>
     </div>
-    <nav class="header__nav">
-      <a href="https://instagram.com/kape.vm" target="_blank" rel="noopener">Instagram</a>
-    </nav>
-
-    <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 01-8 0"/>
-      </svg>
-      <span class="cart-total" id="cartTotal">$0</span>
-      <span class="cart-badge" id="cartBadge">0</span>
-    </button>
+    <div class="header__right">
+      <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-total" id="cartTotal">$0</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
   </header>
 
   <!-- ══ HERO ══ -->
   <section class="hero">
-    <div class="hero__line">
-      <span class="hero__eyebrow">Villa María · Córdoba</span>
-    </div>
     <h1 class="hero__title">KA<span>P</span>É</h1>
     <p class="hero__subtitle">— Lomitos Árabes —</p>
+    <a class="hero__instagram" href="https://instagram.com/kape.vm" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+      </svg>
+      Instagram
+    </a>
   </section>
 
   <!-- ══ GRID: solo 2 cards de entrada ══ -->

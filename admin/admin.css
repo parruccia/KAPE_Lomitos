@@ -35,8 +35,9 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
-  display: block;
-  margin-bottom: .2rem;
+  display: inline-block;
+  width: auto;
+  margin: 0 auto .2rem;
 }
 
 .login-title {
@@ -599,5 +600,101 @@ select.form-input option { background: #111; }
     justify-content: flex-end;
     flex-wrap: wrap;
     width: 100%;
+  }
+}
+
+/* ── HORARIOS ── */
+#horariosLista {
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+}
+
+.horario-card {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+
+.horario-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-bottom: .6rem;
+}
+
+.horario-card__dia {
+  font-family: var(--font-d);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--smoke);
+}
+
+.horario-cerrado {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .78rem;
+  color: rgba(240,237,232,.5);
+  cursor: pointer;
+}
+.horario-cerrado input { cursor: pointer; }
+
+.horario-card__franjas {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  padding-top: .6rem;
+  border-top: 1px solid var(--border);
+}
+
+.horario-franja {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.horario-franja__label {
+  font-family: var(--font-d);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(240,237,232,.4);
+  min-width: 62px;
+}
+
+.horario-franja input[type="time"] {
+  width: auto;
+  flex: 1;
+  min-width: 100px;
+}
+
+.horario-card__franjas .accion-btn {
+  align-self: flex-start;
+  margin-top: .3rem;
+}
+
+.accion-btn {
+  color: var(--smoke);
+}
+.accion-btn--danger {
+  color: #c51a1a; /* o el rojo que prefieras, bien visible */
+}
+
+.tabla td.td-vacio {
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .horario-franja input[type="time"] {
+    min-width: 90px;
   }
 }

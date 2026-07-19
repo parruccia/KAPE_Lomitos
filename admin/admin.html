@@ -4,25 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — KAPÉ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../carrito/carrito.css" />
   <link rel="stylesheet" href="admin.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
 
   <!-- ══ LOGIN ══ -->
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
-      <span class="logo-k" aria-hidden="true">K</span>
       <h1 class="login-title">Panel Admin</h1>
       <p class="login-sub">Kapé Lomitos Árabes</p>
 
       <div class="form-group">
         <label class="form-label" for="loginEmail">Email</label>
-        <input class="form-input" type="email" id="loginEmail" placeholder="admin@kape.com" />
+        <input class="form-input" type="email" id="loginEmail" />
       </div>
       <div class="form-group">
         <label class="form-label" for="loginPass">Contraseña</label>
-        <input class="form-input" type="password" id="loginPass" placeholder="••••••••" />
+        <input class="form-input" type="password" id="loginPass" />
       </div>
       <p class="login-error" id="loginError"></p>
       <button class="submit-btn" id="loginBtn" onclick="login()">Ingresar</button>
@@ -33,11 +34,8 @@
   <div class="panel-screen" id="panelScreen" style="display:none">
 
     <header class="header">
-      <a href="../index.html" class="header__logo">
         <span class="logo-k" aria-hidden="true">K</span>
         <div class="logo-text">
-          <span class="logo-name">Kapé</span>
-          <span class="logo-sub">Admin</span>
         </div>
       </a>
       <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
@@ -47,8 +45,10 @@
 
       <!-- Selector de sección -->
       <div class="secciones">
-        <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
-        <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
+      <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
+      <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
+      <button class="seccion-btn" data-sec="horarios" onclick="cambiarSeccion(this)">Horarios</button>
+      <button class="seccion-btn" data-sec="cupones" onclick="cambiarSeccion(this)">Cupones</button>
       </div>
 
       <!-- ══ SECCIÓN PRODUCTOS ══ -->
@@ -91,10 +91,45 @@
         <div class="cat-grid" id="catGrid" style="display:none"></div>
       </div>
 
-    </main>
+      <!-- ══ SECCIÓN HORARIOS ══ -->
+      <div id="seccionHorarios" style="display:none">
+        <div class="toolbar">
+          <h2 class="toolbar__title">Horarios</h2>
+        </div>
+
+        <div id="loadingHorarios" class="loading-msg">Cargando horarios...</div>
+        <div id="horariosLista" style="display:none"></div>
+      </div>
+
+      <!-- ══ SECCIÓN CUPONES ══ -->
+<div id="seccionCupones" style="display:none">
+  <div class="toolbar">
+    <h2 class="toolbar__title">Cupones</h2>
+    <button class="add-btn" onclick="abrirModalCupon()">+ Nuevo cupón</button>
   </div>
 
-  <!-- ══ MODAL PRODUCTO ══ -->
+  <div class="tabla-wrap">
+    <div id="loadingCupones" class="loading-msg">Cargando cupones...</div>
+    <table class="tabla" id="tablaCupones" style="display:none">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Vencimiento</th>
+          <th>Usos</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaCuponesBody"></tbody>
+    </table>
+  </div>
+</div>
+
+    </main>
+
+ <!-- ══ MODAL PRODUCTO ══ -->
   <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()"></div>
 
   <div class="modal" id="modal">
@@ -130,6 +165,17 @@
       <div class="form-group">
         <label class="form-label">Categoría</label>
         <select class="form-input" id="mCategoria"></select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Salsas incluidas (gratis)</label>
+          <input class="form-input" type="number" id="mSalsasIncluidas" placeholder="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Toppings incluidos (gratis)</label>
+          <input class="form-input" type="number" id="mToppingsIncluidos" placeholder="0" min="0" />
+        </div>
       </div>
 
       <div class="form-group">
@@ -172,12 +218,106 @@
         <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
       </div>
 
+      <label class="opcion-check" style="cursor:pointer">
+        <span class="opcion-check__nombre">¿Permite elegir salsas y toppings?</span>
+        <input type="checkbox" id="cPersonalizable" />
+      </label>
+
+      <label class="opcion-check" style="cursor:pointer">
+        <span class="opcion-check__nombre">¿Mostrar en el menú principal?</span>
+        <input type="checkbox" id="cVisibleMenu" checked />
+      </label>
+
+      <div class="form-group">
+        <label class="form-label">Precio extra (opcional, solo para categorías tipo Salsas/Toppings)</label>
+        <input class="form-input" type="number" id="cPrecioExtra" placeholder="Ej: 500" />
+      </div>
+
+      <p class="modal-error" id="modalCategoriaError"></p>
+      <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
+    </div>
+  </div>
+
+  <!-- ══ MODAL CATEGORÍA ══ -->
+  <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
+
+  <div class="modal" id="modalCategoria">
+    <div class="modal__header">
+      <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
+      <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
+    </div>
+    <div class="modal__body">
+
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Imagen</label>
+        <label class="upload-label" for="cImagen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Elegir imagen
+        </label>
+        <input type="file" id="cImagen" accept="image/*" style="display:none" onchange="previewImagenCategoria(this)" />
+        <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+      </div>
+
       <p class="modal-error" id="modalCategoriaError"></p>
       <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
     </div>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ══ MODAL CUPÓN ══ -->
+<div class="modal-overlay" id="modalOverlayCupon" onclick="cerrarModalCupon()"></div>
+
+<div class="modal" id="modalCupon">
+  <div class="modal__header">
+    <span class="modal__title" id="modalCuponTitle">Nuevo cupón</span>
+    <button class="drawer__close" onclick="cerrarModalCupon()">✕</button>
+  </div>
+  <div class="modal__body">
+
+    <div class="form-group">
+      <label class="form-label">Código</label>
+      <input class="form-input" type="text" id="cuCodigo" placeholder="Ej: VERANO10" style="text-transform:uppercase" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tipo de descuento</label>
+      <select class="form-input" id="cuTipo">
+        <option value="porcentaje">Porcentaje (%)</option>
+        <option value="fijo">Monto fijo ($)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" id="cuValorLabel">Valor (%)</label>
+      <input class="form-input" type="number" id="cuValor" placeholder="Ej: 10" min="0" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Vencimiento (opcional)</label>
+        <input class="form-input" type="date" id="cuVencimiento" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Usos máximos (opcional)</label>
+        <input class="form-input" type="number" id="cuUsosMaximos" placeholder="Sin límite" min="1" />
+      </div>
+    </div>
+
+    <label class="opcion-check" style="cursor:pointer">
+      <span class="opcion-check__nombre">Activo</span>
+      <input type="checkbox" id="cuActivo" checked />
+    </label>
+
+    <p class="modal-error" id="modalCuponError"></p>
+    <button class="submit-btn" id="modalCuponBtn" onclick="guardarCupon()">Guardar</button>
+  </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabaseConfig.js"></script>

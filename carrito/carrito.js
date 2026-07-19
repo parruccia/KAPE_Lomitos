@@ -12,13 +12,92 @@ function saveCart(cart) {
   localStorage.setItem('kape_cart', JSON.stringify(cart));
 }
 
+// ══════════════════════════════════════
+//  LOMITOS PERSONALIZADOS (líneas propias)
+// ══════════════════════════════════════
+
+function getLomitosCart() {
+  try { return JSON.parse(localStorage.getItem('kape_cart_lomitos')) || []; }
+  catch { return []; }
+}
+
+function saveLomitosCart(lineas) {
+  localStorage.setItem('kape_cart_lomitos', JSON.stringify(lineas));
+}
+
+function agregarLomitoAlCarrito(producto, salsas, toppings) {
+  const lineas = getLomitosCart();
+
+  const clave = JSON.stringify({
+    nombre: producto.nombre,
+    size: producto.tamano || '',
+    salsas: salsas.map(s => s.nombre).sort(),
+    toppings: toppings.map(t => t.nombre).sort()
+  });
+
+  const existente = lineas.find(l => l.clave === clave);
+
+  if (existente) {
+    existente.qty += 1;
+  } else {
+    const precioTotal = producto.precio
+      + salsas.reduce((s, x) => s + x.precio, 0)
+      + toppings.reduce((s, x) => s + x.precio, 0);
+
+    lineas.push({
+      id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      clave,
+      nombre: producto.nombre,
+      size: producto.tamano || '',
+      precioUnitario: precioTotal,
+      salsas,
+      toppings,
+      qty: 1
+    });
+  }
+
+  saveLomitosCart(lineas);
+  updateCartUI();
+}
+
+function changeQtyLomito(id, delta) {
+  if (delta > 0 && !tiendaAbierta) {
+    showToast(proximaApertura ? `Cerrado. Abrimos: ${proximaApertura}` : 'Estamos cerrados en este momento 🕐');
+    return;
+  }
+
+  let lineas = getLomitosCart();
+  const linea = lineas.find(l => l.id === id);
+  if (!linea) return;
+
+  linea.qty = Math.max(0, linea.qty + delta);
+  if (linea.qty === 0) {
+    lineas = lineas.filter(l => l.id !== id);
+  }
+
+  saveLomitosCart(lineas);
+  updateCartUI();
+}
+
+function removeLomitoLine(id) {
+  const lineas = getLomitosCart().filter(l => l.id !== id);
+  saveLomitosCart(lineas);
+  updateCartUI();
+}
+
 function changeQty(btn, delta) {
-  const qtyEl   = btn.parentElement;
-  const countEl = qtyEl.querySelector('.qty__count');
-  const name    = qtyEl.dataset.name;
-  const size    = qtyEl.dataset.size;
-  const price   = parseInt(qtyEl.dataset.price);
-  const cart    = getCart();
+  if (delta > 0 && !tiendaAbierta) {
+    showToast(proximaApertura ? `Cerrado. Abrimos: ${proximaApertura}` : 'Estamos cerrados en este momento 🕐');
+    return;
+  }
+
+  const qtyEl    = btn.parentElement;
+  const countEl  = qtyEl.querySelector('.qty__count');
+  const name     = qtyEl.dataset.name;
+  const size     = qtyEl.dataset.size;
+  const price    = parseInt(qtyEl.dataset.price);
+  const categoria = qtyEl.dataset.categoria || '';
+  const cart     = getCart();
 
   let current = parseInt(countEl.textContent) || 0;
   current = Math.max(0, current + delta);
@@ -27,7 +106,7 @@ function changeQty(btn, delta) {
   if (current === 0) {
     delete cart[name];
   } else {
-    cart[name] = { name, size, price, qty: current };
+    cart[name] = { name, size, price, qty: current, categoria };
     if (delta > 0) showToast(`<span>${name}</span> agregado`);
   }
 
@@ -47,19 +126,24 @@ function removeItem(key) {
 }
 
 function updateCartUI() {
-  const cart    = getCart();
-  const items   = Object.values(cart);
-  const total   = items.reduce((s, i) => s + i.price * i.qty, 0);
-  const count   = items.reduce((s, i) => s + i.qty, 0);
+  const cart        = getCart();
+  const items       = Object.values(cart);
+  const lineasLomito = getLomitosCart();
+
+  const totalItems   = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const totalLomitos = lineasLomito.reduce((s, l) => s + l.precioUnitario * l.qty, 0);
+  const total        = totalItems + totalLomitos;
+
+  const countItems   = items.reduce((s, i) => s + i.qty, 0);
+  const countLomitos = lineasLomito.reduce((s, l) => s + l.qty, 0);
+  const count        = countItems + countLomitos;
 
   const badge   = document.getElementById('cartBadge');
   const totalEl = document.getElementById('cartTotal');
   const drawerEl= document.getElementById('drawerItems');
   const drawerT = document.getElementById('drawerTotal');
   const cartBtn = document.querySelector('.cart-btn');
-
-  if (cartBtn) cartBtn.classList.toggle('visible', count > 0);
-
+  
   if (totalEl) totalEl.textContent = formatPrice(total);
   if (badge) {
     badge.textContent = count;
@@ -67,7 +151,8 @@ function updateCartUI() {
   }
   if (drawerT) drawerT.textContent = formatPrice(total);
 
-  // sincroniza contadores visuales
+
+  // sincroniza contadores visuales (para bebidas, postres, salsas, toppings sueltos)
   document.querySelectorAll('.qty').forEach(el => {
     const n = el.dataset.name;
     const c = el.querySelector('.qty__count');
@@ -76,12 +161,29 @@ function updateCartUI() {
 
   if (!drawerEl) return;
 
-  if (items.length === 0) {
+  if (count === 0) {
     drawerEl.innerHTML = '<p class="drawer__empty">Tu carrito está vacío.</p>';
     return;
   }
 
-  drawerEl.innerHTML = items.map(i => `
+  const htmlLomitos = lineasLomito.map(l => {
+    const salsasTexto   = l.salsas.length ? `Salsas: ${l.salsas.map(s => s.nombre).join(', ')}` : '';
+    const toppingsTexto = l.toppings.length ? `Toppings: ${l.toppings.map(t => t.nombre).join(', ')}` : '';
+    return `
+      <div class="drawer-item">
+        <div class="drawer-item__info">
+          <span class="drawer-item__name">${l.qty}× ${l.nombre}</span>
+          <span class="drawer-item__size">${l.size}</span>
+          ${salsasTexto ? `<span class="drawer-item__extras">${salsasTexto}</span>` : ''}
+          ${toppingsTexto ? `<span class="drawer-item__extras">${toppingsTexto}</span>` : ''}
+        </div>
+        <span class="drawer-item__price">${formatPrice(l.precioUnitario * l.qty)}</span>
+        <button class="drawer-item__remove" onclick="removeLomitoLine('${l.id}')">✕</button>
+      </div>
+    `;
+  }).join('');
+
+  const htmlItems = items.map(i => `
     <div class="drawer-item">
       <div class="drawer-item__info">
         <span class="drawer-item__name">${i.qty}× ${i.name}</span>
@@ -91,6 +193,8 @@ function updateCartUI() {
       <button class="drawer-item__remove" onclick="removeItem('${i.name}')">✕</button>
     </div>
   `).join('');
+
+  drawerEl.innerHTML = htmlLomitos + htmlItems;
 }
 
 function toggleDrawer() {
@@ -117,8 +221,15 @@ function zoomImagen(src) {
 }
 
 function handleCheckout() {
+  if (!tiendaAbierta) {
+    showToast(proximaApertura ? `Cerrado. Abrimos: ${proximaApertura}` : 'Estamos cerrados en este momento 🕐');
+    return;
+  }
+
   const items = Object.values(getCart());
-  if (items.length === 0) {
+  const lineasLomito = getLomitosCart();
+
+  if (items.length === 0 && lineasLomito.length === 0) {
     showToast('Tu carrito está vacío');
     return;
   }
@@ -128,6 +239,89 @@ function handleCheckout() {
   const rutaDatos = enSubpagina ? '../datos/datos.html' : 'datos/datos.html';
 
   window.location.href = rutaDatos;
+}
+
+// ── VERIFICAR SI LA TIENDA ESTÁ ABIERTA ──
+let tiendaAbierta = true;
+let proximaApertura = '';
+
+async function verificarHorario() {
+  const ahora = new Date();
+  const diaSemana = ahora.getDay();
+  const horaActual = ahora.getHours() * 60 + ahora.getMinutes();
+
+  const { data, error } = await db.from('horarios').select('*').order('dia_semana');
+
+  if (error || !data || !data.length) {
+    tiendaAbierta = true;
+    return;
+  }
+
+  const enRango = (apertura, cierre, minutos) => {
+    if (!apertura || !cierre) return false;
+    const [ha, ma] = apertura.split(':').map(Number);
+    const [hc, mc] = cierre.split(':').map(Number);
+    return minutos >= (ha * 60 + ma) && minutos < (hc * 60 + mc);
+  };
+
+  const hoy = data.find(h => h.dia_semana === diaSemana);
+
+  if (hoy && !hoy.cerrado) {
+    tiendaAbierta = enRango(hoy.apertura1, hoy.cierre1, horaActual) || enRango(hoy.apertura2, hoy.cierre2, horaActual);
+  } else {
+    tiendaAbierta = false;
+  }
+
+  if (!tiendaAbierta) {
+    proximaApertura = calcularProximaApertura(data, diaSemana, horaActual);
+  }
+}
+
+function calcularProximaApertura(horarios, diaActual, minutosActuales) {
+  const NOMBRES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+  for (let i = 0; i < 8; i++) {
+    const dia = (diaActual + i) % 7;
+    const h = horarios.find(x => x.dia_semana === dia);
+    if (!h || h.cerrado) continue;
+
+    const turnos = [h.apertura1, h.apertura2].filter(Boolean);
+    for (const turno of turnos) {
+      const [hh, mm] = turno.split(':').map(Number);
+      const minTurno = hh * 60 + mm;
+      const turnoCorto = turno.slice(0, 5);
+
+      if (i === 0 && minTurno <= minutosActuales) continue;
+
+      if (i === 0) return `Hoy a las ${turnoCorto}`;
+      if (i === 1) return `Mañana a las ${turnoCorto}`;
+      return `El ${NOMBRES[dia]} a las ${turnoCorto}`;
+    }
+  }
+
+  return '';
+}
+
+// ── MOSTRAR CARTEL DE CERRADO (si corresponde) ──
+function mostrarCartelCerrado() {
+  if (tiendaAbierta) return;
+
+  const lista = document.getElementById('productosList');
+  if (lista) {
+    const cartel = document.createElement('div');
+    cartel.className = 'cerrado-msg';
+    cartel.innerHTML = `
+      🕐 Estamos cerrados en este momento. No podés agregar productos, pero podés ver el menú.
+      ${proximaApertura ? `<br><strong>Abrimos: ${proximaApertura}</strong>` : ''}
+    `;
+    lista.parentNode.insertBefore(cartel, lista);
+  }
+
+  document.querySelectorAll('.qty__btn.add, .lomito-add-btn').forEach(btn => {
+    btn.disabled = true;
+    btn.style.opacity = '.3';
+    btn.style.cursor = 'not-allowed';
+  });
 }
 
 let toastTimer;
@@ -144,4 +338,15 @@ function formatPrice(n) {
   return '$' + n.toLocaleString('es-AR');
 }
 
-document.addEventListener('DOMContentLoaded', updateCartUI);
+document.addEventListener('DOMContentLoaded', async () => {
+  await verificarHorario();
+  mostrarCartelCerrado();
+  updateCartUI();
+});
+
+function mostrarErrorCritico() {
+  document.getElementById('errorBanner').classList.add('visible');
+}
+
+window.addEventListener('error', mostrarErrorCritico);
+window.addEventListener('unhandledrejection', mostrarErrorCritico);

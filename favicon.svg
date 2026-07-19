@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0D0D0D"/>
+  <text x="32" y="46" font-family="Arial, sans-serif" font-size="40" font-weight="900" text-anchor="middle">
+    <tspan fill="#C8102E">K</tspan>
+  </text>
+  <clipPath id="clip">
+    <text x="32" y="46" font-family="Arial, sans-serif" font-size="40" font-weight="900" text-anchor="middle">K</text>
+  </clipPath>
+  <g clip-path="url(#clip)">
+    <rect x="0" y="0" width="64" height="21" fill="#C8102E"/>
+    <rect x="0" y="21" width="64" height="21" fill="#F0EDE8"/>
+    <rect x="0" y="42" width="64" height="22" fill="#1A237E"/>
+  </g>
+</svg>

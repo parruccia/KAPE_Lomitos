@@ -33,7 +33,7 @@ async function cargarProductos() {
         ${p.descripcion ? `<p class="product__desc">${p.descripcion}</p>` : ''}
         <span class="product__price">${formatPrice(p.precio)}</span>
       </div>
-      <div class="qty" data-name="${p.nombre}" data-size="${p.tamano || ''}" data-price="${p.precio}">
+      <div class="qty" data-name="${p.nombre}" data-size="${p.tamano || ''}" data-price="${p.precio}" data-categoria="${p.categoria}">
         <button class="qty__btn add" onclick="changeQty(this, 1)">＋</button>
         <span class="qty__count">0</span>
         <button class="qty__btn" onclick="changeQty(this, -1)">－</button>

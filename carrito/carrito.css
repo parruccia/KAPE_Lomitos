@@ -39,12 +39,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  height: 64px;
+  padding: .4rem 2rem; 
+  min-height: 72px;      
   background: rgba(13,13,13,.97);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(201,168,76,.2);
   flex-shrink: 0;
+  overflow: visible;     
 }
 
 /* Logo */
@@ -56,14 +57,22 @@ body {
 }
 
 .logo-k {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
   font-family: var(--font-d);
-  font-size: 2rem;
+  font-size: 1.55rem;
   font-weight: 900;
+  line-height: 1;
+
   background: linear-gradient(to bottom, var(--red) 33%, #fff 33% 66%, var(--navy) 66%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  line-height: 1;
 }
 
 .logo-text { line-height: 1.15; }
@@ -125,21 +134,21 @@ body {
   background: none;
   border: 1px solid rgba(201,168,76,.3);
   border-radius: 6px;
-  padding: .4rem .65rem;
+  padding: .45rem .7rem;
   cursor: pointer;
   color: var(--smoke);
   display: flex;
   align-items: center;
-  gap: .4rem;
+  gap: .45rem;
   transition: border-color .2s, background .2s;
   flex-shrink: 0;
 }
 .cart-btn:hover { border-color: var(--gold); background: rgba(201,168,76,.07); }
-.cart-btn svg { width: 18px; height: 18px; }
+.cart-btn svg { width: 20px; height: 20px; }
 
 .cart-total {
   font-family: var(--font-d);
-  font-size: .88rem;
+  font-size: .9rem;
   font-weight: 700;
   color: var(--gold);
   min-width: 1ch;
@@ -147,20 +156,25 @@ body {
 
 .cart-badge {
   position: absolute;
-  top: -7px; right: -7px;
+  top: -4px;
+  right: -4px;
   background: var(--red);
   color: #fff;
   font-family: var(--font-d);
-  font-size: .65rem;
+  font-size: .72rem;
   font-weight: 700;
-  width: 17px; height: 17px;
+  line-height: 1;
+  width: 19px;
+  height: 19px;
+  min-width: 19px;
   border-radius: 50%;
+  border: 2px solid rgba(13,13,13,.97);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transform: scale(0);
-  transition: opacity .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
+  transition: opacity .2s, transform .2s;
 }
 .cart-badge.visible { opacity: 1; transform: scale(1); }
 
@@ -381,7 +395,10 @@ body {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
-  .header { padding: 0 1rem; }
+  .header {
+    padding: .5rem 1.2rem;  
+    min-height: 68px;
+  }
   .header__nav { display: none; }
   .logo-sub { display: none; }
   .footer { padding: 1rem; }
@@ -412,4 +429,39 @@ body {
   border-radius: 8px;
   object-fit: contain;
   cursor: default;
+}
+
+/* ── UPSELL SALSAS/TOPPINGS ── */
+.upsell-msg {
+  text-align: center;
+  font-size: .82rem;
+  color: var(--gold);
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: 6px;
+  padding: .6rem .8rem;
+  margin-bottom: .8rem;
+  letter-spacing: .02em;
+}
+
+/* ── CARTEL DE CERRADO ── */
+.cerrado-msg {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--red);
+  background: rgba(200,16,46,.08);
+  border: 1px solid rgba(200,16,46,.3);
+  border-radius: 8px;
+  padding: .9rem 1.1rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+/* ── EXTRAS DE LOMITO PERSONALIZADO (salsas/toppings) ── */
+.drawer-item__extras {
+  font-size: .7rem;
+  color: rgba(240,237,232,.4);
+  display: block;
+  margin-top: .15rem;
+  line-height: 1.4;
 }

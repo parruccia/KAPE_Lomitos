@@ -63,9 +63,34 @@
         <span class="drawer__subtotal-label">Total</span>
         <span class="drawer__subtotal-price" id="drawerTotal">$0</span>
       </div>
+      <p class="upsell-msg" id="upsellSalsas" style="display:none"></p>
       <button class="checkout-btn" onclick="handleCheckout()">Confirmar pedido</button>
     </div>
   </aside>
+
+  <!-- ══ MODAL PERSONALIZAR LOMITO ══ -->
+  <div class="overlay" id="overlayPersonalizar" onclick="cerrarPersonalizar()"></div>
+
+  <div class="modal-personalizar" id="modalPersonalizar">
+    <div class="modal-personalizar__header">
+      <span class="modal-personalizar__title" id="personalizarNombre">Lomito</span>
+      <button class="drawer__close" onclick="cerrarPersonalizar()">✕</button>
+    </div>
+    <div class="modal-personalizar__body">
+      <div class="modal-personalizar__grupo">
+        <span class="modal-personalizar__label">Salsas</span>
+        <div id="personalizarSalsas" class="modal-personalizar__opciones"></div>
+      </div>
+      <div class="modal-personalizar__grupo">
+        <span class="modal-personalizar__label">Toppings</span>
+        <div id="personalizarToppings" class="modal-personalizar__opciones"></div>
+      </div>
+    </div>
+    <div class="modal-personalizar__footer">
+      <span class="modal-personalizar__total" id="personalizarTotal">$0</span>
+      <button class="checkout-btn" onclick="confirmarPersonalizar()">Agregar al pedido</button>
+    </div>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

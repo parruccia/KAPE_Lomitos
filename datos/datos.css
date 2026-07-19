@@ -203,13 +203,13 @@
 .radio-option input[type="radio"] { display: none; }
 
 .radio-dot {
-  width: 16px; height: 16px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   border: 2px solid rgba(240,237,232,.3);
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;      /* en vez de display:flex + align/justify */
+  box-sizing: border-box;  /* asegura que el borde no altere el tamaño real */
   transition: border-color .2s;
 }
 .radio-option.selected .radio-dot,
@@ -220,10 +220,15 @@
 
 .radio-dot::after {
   content: '';
-  width: 7px; height: 7px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--gold);
   opacity: 0;
+  transform: translate(-50%, -50%);
   transition: opacity .2s;
 }
 .radio-option.selected .radio-dot::after { opacity: 1; }
@@ -296,4 +301,209 @@
   /* Resumen arriba en mobile */
   .resumen { order: -1; }
   .hero { height: 130px; padding: 1rem; }
+}
+
+/* ── CUPÓN ── */
+.resumen__cupon {
+  padding: 0 1.2rem .9rem;
+}
+
+.cupon-row {
+  display: flex;
+  gap: .5rem;
+  padding-top: .3rem;
+}
+
+.cupon-row .form-input {
+  flex: 1;
+  min-width: 0;
+  padding: .6rem .8rem;
+  font-size: .85rem;
+  text-transform: uppercase;
+}
+
+.cupon-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 1rem;
+  font-family: var(--font-d);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.cupon-btn:hover { border-color: var(--gold); background: rgba(201,168,76,.06); }
+.cupon-btn:disabled { opacity: .4; cursor: default; }
+
+.cupon-msg {
+  font-size: .72rem;
+  min-height: 1.1em;
+  padding-top: .4rem;
+  font-family: var(--font-b);
+}
+.cupon-msg--ok { color: var(--gold); }
+.cupon-msg--error { color: var(--red); }
+
+.resumen__descuento {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: .6rem 1.2rem 0;
+}
+.resumen__descuento .resumen__total-label {
+  font-family: var(--font-d);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: rgba(240,237,232,.4);
+}
+.resumen__descuento .resumen__total-price {
+  font-family: var(--font-d);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.campo-transferencia {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height .3s ease, opacity .3s ease, margin .3s ease;
+  margin-top: 0;
+  background: #131313;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 1rem;
+}
+.campo-transferencia.visible {
+  max-height: 100px;
+  opacity: 1;
+  margin-top: .5rem;
+  padding: .8rem 1rem;
+}
+
+.transferencia-alias {
+  font-family: var(--font-b);
+  font-size: .92rem;
+  color: var(--smoke);
+}
+.transferencia-alias strong {
+  color: var(--gold);
+}
+
+.transferencia-nota {
+  font-size: .72rem;
+  color: rgba(240,237,232,.4);
+  margin-top: .3rem;
+}
+
+.transferencia-alias {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.alias-copy-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: .2rem .6rem;
+  font-family: var(--font-d);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.alias-copy-btn:hover {
+  border-color: var(--gold);
+  background: rgba(201,168,76,.06);
+}
+
+.cupon-promo {
+  font-size: .68rem;
+  letter-spacing: .02em;
+  color: rgba(240,237,232,.35);
+  padding-top: .3rem;
+}
+
+.cupon-promo a {
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: none;
+}
+.cupon-promo a:hover {
+  text-decoration: underline;
+}
+
+.radio-maps-btn {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 20px;
+  padding: .35rem .7rem;
+  font-family: var(--font-d);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  transition: background .2s, border-color .2s;
+}
+.radio-maps-btn:hover {
+  background: rgba(201,168,76,.15);
+  border-color: var(--gold);
+}
+.radio-maps-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.error-banner {
+  display: none;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 999;
+  background: #1a0d0d;
+  border-top: 1px solid var(--red);
+  padding: .9rem 1.2rem;
+  text-align: center;
+}
+.error-banner.visible { display: block; }
+
+.error-banner p {
+  font-size: .82rem;
+  color: var(--smoke);
+  margin-bottom: .6rem;
+}
+
+.error-banner__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: var(--red);
+  color: #fff;
+  border-radius: 6px;
+  padding: .6rem 1.2rem;
+  font-family: var(--font-d);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
 }

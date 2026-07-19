@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title id="pageTitle">Categoría — KAPÉ</title>
   <link rel="stylesheet" href="lomitos.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
 
@@ -16,9 +17,6 @@
       </svg>
       Volver
     </a>
-    <a href="../index.html" class="header__logo">
-      <span class="logo-k" aria-hidden="true">K</span>
-      <span class="logo-name">Kapé</span>
     </a>
     <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -62,6 +60,31 @@
       <button class="checkout-btn" onclick="handleCheckout()">Confirmar pedido</button>
     </div>
   </aside>
+
+ <!-- ══ MODAL PERSONALIZAR (solo si la categoría lo permite) ══ -->
+  <div class="overlay" id="overlayPersonalizar" onclick="cerrarPersonalizar()"></div>
+
+  <div class="modal-personalizar" id="modalPersonalizar">
+    <div class="modal-personalizar__header">
+      <span class="modal-personalizar__title" id="personalizarNombre">Producto</span>
+      <button class="drawer__close" onclick="cerrarPersonalizar()">✕</button>
+    </div>
+    <div class="modal-personalizar__body">
+      <div class="modal-personalizar__grupo">
+        <span class="modal-personalizar__label"><span id="labelSalsas">Salsas</span> <span id="contadorSalsas" class="modal-personalizar__contador"></span></span>
+        <div id="personalizarSalsas" class="modal-personalizar__opciones"></div>
+      </div>
+      <div class="modal-personalizar__grupo">
+        <span class="modal-personalizar__label"><span id="labelToppings">Toppings</span> <span id="contadorToppings" class="modal-personalizar__contador"></span></span>
+        <div id="personalizarToppings" class="modal-personalizar__opciones"></div>
+      </div>
+    </div>
+    <div class="modal-personalizar__footer">
+      <span class="modal-personalizar__total" id="personalizarTotal">$0</span>
+      <button class="checkout-btn" onclick="confirmarPersonalizar()">Agregar al pedido</button>
+    </div>
+  </div>
+
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

@@ -539,3 +539,38 @@ body {
   object-fit: contain;
   cursor: default;
 }
+
+/* ── UPSELL SALSAS/TOPPINGS ── */
+.upsell-msg {
+  text-align: center;
+  font-size: .82rem;
+  color: var(--gold);
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: 6px;
+  padding: .6rem .8rem;
+  margin-bottom: .8rem;
+  letter-spacing: .02em;
+}
+
+/* ── CARTEL DE CERRADO ── */
+.cerrado-msg {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--red);
+  background: rgba(200,16,46,.08);
+  border: 1px solid rgba(200,16,46,.3);
+  border-radius: 8px;
+  padding: .9rem 1.1rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+/* ── EXTRAS DE LOMITO PERSONALIZADO (salsas/toppings) ── */
+.drawer-item__extras {
+  font-size: .7rem;
+  color: rgba(240,237,232,.4);
+  display: block;
+  margin-top: .15rem;
+  line-height: 1.4;
+}
