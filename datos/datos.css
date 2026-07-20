@@ -388,14 +388,6 @@
   padding: .8rem 1rem;
 }
 
-.transferencia-alias {
-  font-family: var(--font-b);
-  font-size: .92rem;
-  color: var(--smoke);
-}
-.transferencia-alias strong {
-  color: var(--gold);
-}
 
 .transferencia-nota {
   font-size: .72rem;
@@ -403,12 +395,6 @@
   margin-top: .3rem;
 }
 
-.transferencia-alias {
-  display: flex;
-  align-items: center;
-  gap: .6rem;
-  flex-wrap: wrap;
-}
 
 .alias-copy-btn {
   background: transparent;
@@ -534,4 +520,87 @@
 
 .radio-sub--envio {
   margin-left: 1rem;
+}
+
+.fallback-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+}
+.fallback-overlay.visible {
+  display: flex;
+}
+
+.fallback-box {
+  background: #131313;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.4rem;
+  max-width: 360px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+
+.fallback-box__title {
+  font-family: var(--font-d);
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+
+.fallback-box__texto {
+  font-size: .8rem;
+  color: rgba(240,237,232,.5);
+  margin-bottom: .3rem;
+}
+
+.fallback-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .75rem;
+  font-family: var(--font-d);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  text-decoration: none;
+  cursor: pointer;
+}
+.fallback-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.fallback-btn--principal {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+.fallback-btn--principal:hover {
+  background: #a50d24;
+  border-color: #a50d24;
+  color: #fff;
+}
+
+.fallback-box__cerrar {
+  background: none;
+  border: none;
+  color: rgba(240,237,232,.4);
+  font-size: .75rem;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: .3rem;
 }

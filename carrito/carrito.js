@@ -348,7 +348,9 @@ function showToast(html) {
   t.innerHTML = html;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+
+  const duracion = Math.max(2500, html.length * 60);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duracion);
 }
 
 function formatPrice(n) {

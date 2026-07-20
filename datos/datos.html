@@ -76,7 +76,13 @@
       <!-- Nombre y apellido -->
       <div class="form-group">
         <label class="form-label" for="nombreInput">Nombre y apellido</label>
-        <input class="form-input" type="text" id="nombreInput" placeholder="Ej: Juan Pérez" autocomplete="name" />
+        <input class="form-input" type="text" id="nombreInput" autocomplete="name" />
+      </div>
+
+      <!-- Telefono -->
+      <div class="form-group">
+        <label class="form-label" for="telefonoInput">Teléfono</label>
+        <input class="form-input" type="tel" id="telefonoInput" autocomplete="tel" />
       </div>
 
       <!-- Entrega -->
@@ -144,11 +150,10 @@
           </div> <!-- ← cierra radio-group -->
 
           <div class="campo-transferencia" id="campoTransferencia">
-            <p class="transferencia-alias">
-              Alias: <strong id="aliasTexto">kape.vm.ejemplo</strong>
-              <button type="button" class="alias-copy-btn" onclick="copiarAlias()">Copiar</button>
+            <p class="transferencia-nota">
+              Al final del mensaje de WhatsApp vas a encontrar el alias para transferir. Mandanos el comprobante ahí
+              mismo.
             </p>
-            <p class="transferencia-nota">Transferí el total y mandanos el pedido con el comprobante.</p>
           </div>
 
         </div> <!-- ← cierra form-group -->
@@ -186,6 +191,7 @@
 
       // ── Estado del cupón ──
       let cupon = null; // { id, codigo, tipo, valor, ... } o null si no hay cupón aplicado
+      let ultimoMensajePedido = '';
 
       // ── Calcular subtotal / descuento / total ──
       function calcularTotales() {
@@ -349,11 +355,64 @@
           .catch(() => showToast('No se pudo copiar'));
       }
 
+      function agruparNombres(lista) {
+        const conteo = {};
+        lista.forEach(item => {
+          conteo[item.nombre] = (conteo[item.nombre] || 0) + 1;
+        });
+        return Object.entries(conteo)
+          .map(([nombre, cant]) => cant > 1 ? `${cant}x ${nombre}` : nombre)
+          .join(', ');
+      }
+
+      function fechaHoraActual() {
+        const ahora = new Date();
+        const dd = String(ahora.getDate()).padStart(2, '0');
+        const mm = String(ahora.getMonth() + 1).padStart(2, '0');
+        const aa = String(ahora.getFullYear()).slice(-2);
+        const hh = String(ahora.getHours()).padStart(2, '0');
+        const min = String(ahora.getMinutes()).padStart(2, '0');
+        return `${dd}/${mm}/${aa} - ${hh}:${min}hs`;
+      }
+
+      async function localEstaAbierto() {
+        const ahora = new Date();
+        const diaActual = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ... 6 = Sábado
+        const horaActual = ahora.getHours() * 60 + ahora.getMinutes(); // minutos desde las 00:00
+
+        const { data, error } = await db
+          .from('horarios')
+          .select('*')
+          .eq('dia_semana', diaActual)
+          .maybeSingle();
+
+        if (error || !data || data.cerrado) return false;
+
+        const enRango = (apertura, cierre) => {
+          if (!apertura || !cierre) return false;
+          const [ah, am] = apertura.split(':').map(Number);
+          const [ch, cm] = cierre.split(':').map(Number);
+          const inicio = ah * 60 + am;
+          const fin = ch * 60 + cm;
+          return horaActual >= inicio && horaActual <= fin;
+        };
+
+        return enRango(data.apertura1, data.cierre1) || enRango(data.apertura2, data.cierre2);
+      }
+
       // ── Enviar pedido ──
       async function enviarPedido() {
         try {
+          const abierto = await localEstaAbierto();
+          if (!abierto) {
+            return showToast('El local está cerrado en este momento. Volvé a intentar en nuestro horario de atención.');
+          }
+
           const nombre = document.getElementById('nombreInput').value.trim();
           if (!nombre) return showToast('Ingresá tu nombre');
+          const telefono = document.getElementById('telefonoInput').value.trim();
+          if (!telefono) return showToast('Ingresá tu teléfono');
+          if (!/^\d+$/.test(telefono)) return showToast('El teléfono solo puede tener números');
           if (!form.entrega) return showToast('Elegí cómo recibir el pedido');
           if (form.entrega === 'envio') {
             const dir = document.getElementById('direccionInput').value.trim();
@@ -369,8 +428,8 @@
           if (!items.length && !lineasLomito.length) return showToast('El carrito está vacío');
 
           const lineasLomitoTexto = lineasLomito.map(l => {
-            const salsasTexto = l.salsas.length ? `  Salsas: ${l.salsas.map(s => s.nombre).join(', ')}` : '';
-            const toppingsTexto = l.toppings.length ? `  Toppings: ${l.toppings.map(t => t.nombre).join(', ')}` : '';
+            const salsasTexto = l.salsas.length ? `  Salsas: ${agruparNombres(l.salsas)}` : '';
+            const toppingsTexto = l.toppings.length ? `  Toppings: ${agruparNombres(l.toppings)}` : '';
             const extrasTexto = [salsasTexto, toppingsTexto].filter(Boolean).join('\n');
             return `- ${l.qty}x ${l.nombre} = ${formatPrice(l.precioUnitario * l.qty)}${extrasTexto ? `\n${extrasTexto}` : ''}`;
           }).join('\n');
@@ -387,7 +446,7 @@
 
           const entregaTexto = form.entrega === 'retiro'
             ? `Retiro en local (${document.getElementById('direccionLocal').textContent.trim()})`
-            : `Envío a: ${direccion}${barrio ? ` (Barrio ${barrio})` : ''}` +
+            : `Envío a: ${direccion}${barrio ? ` (Barrio ${barrio})` : ''} — $3500 a $6000 aprox., según la zona` +
             `${observaciones ? `\n*Observaciones:* ${observaciones}` : ''}`;
           const pagoTexto = { efectivo: 'Efectivo', qr: 'QR', transferencia: 'Transferencia' }[form.pago];
 
@@ -405,7 +464,9 @@
 
           const msg = encodeURIComponent(
             `¡Hola! 👋 Quiero hacer un pedido\n\n` +
-            `*Cliente:* ${nombre}\n\n` +
+            `*Cliente:* ${nombre}\n` +
+            `*Fecha:* ${fechaHoraActual()}\n` +
+            `*Teléfono:* ${telefono}\n\n` +
             `*Pedido:*\n${lineas}\n\n` +
             totalTexto +
             `*Entrega:* ${entregaTexto}\n` +
@@ -422,11 +483,31 @@
             }
           }
 
+          ultimoMensajePedido = decodeURIComponent(msg);
           window.open(`https://wa.me/5493534214780?text=${msg}`, '_blank');
+          mostrarFallback();
         } catch (err) {
           console.error(err);
           mostrarErrorCritico();
         }
+      }
+
+      function mostrarFallback() {
+        document.getElementById('fallbackOverlay').classList.add('visible');
+      }
+
+      function cerrarFallback() {
+        document.getElementById('fallbackOverlay').classList.remove('visible');
+      }
+
+      function reintentarWhatsapp() {
+        window.open(`https://wa.me/5493534214780?text=${encodeURIComponent(ultimoMensajePedido)}`, '_blank');
+      }
+
+      function copiarMensajePedido() {
+        navigator.clipboard.writeText(ultimoMensajePedido)
+          .then(() => showToast('Pedido copiado'))
+          .catch(() => showToast('No se pudo copiar'));
       }
 
       function armarLinkMapaLocal() {
@@ -448,6 +529,26 @@
       <a href="https://wa.me/5493534214780" target="_blank" rel="noopener" class="error-banner__btn">
         Escribir por WhatsApp
       </a>
+    </div>
+
+    <div class="fallback-overlay" id="fallbackOverlay">
+      <div class="fallback-box">
+        <h3 class="fallback-box__title">¿No se abrió WhatsApp?</h3>
+        <p class="fallback-box__texto">Probá alguna de estas opciones para que tu pedido nos llegue igual:</p>
+
+        <button type="button" class="fallback-btn fallback-btn--principal" onclick="reintentarWhatsapp()">
+          Reintentar WhatsApp
+        </button>
+        <button type="button" class="fallback-btn" onclick="copiarMensajePedido()">
+          Copiar pedido
+        </button>
+        <a class="fallback-btn" href="https://instagram.com/kape.vm" target="_blank" rel="noopener"
+          onclick="copiarMensajePedido()">
+          Ir a Instagram
+        </a>
+
+        <button type="button" class="fallback-box__cerrar" onclick="cerrarFallback()">Ya lo envié, cerrar</button>
+      </div>
     </div>
 
 </body>

@@ -357,25 +357,28 @@ body {
 /* ── TOAST ── */
 .toast {
   position: fixed;
-  bottom: 1.5rem;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(80px);
+  transform: translate(-50%, -50%) scale(.95);
   background: #1e1e1e;
   border: 1px solid rgba(201,168,76,.3);
   border-radius: 8px;
-  padding: .6rem 1.2rem;
+  padding: .9rem 1.4rem;
   font-family: var(--font-d);
   font-size: .9rem;
   font-weight: 600;
   letter-spacing: .05em;
   color: var(--smoke);
   z-index: 500;
-  white-space: nowrap;
+  max-width: min(90vw, 420px);
+  white-space: normal;
+  text-align: center;
+  line-height: 1.4;
   opacity: 0;
   pointer-events: none;
   transition: transform .3s ease, opacity .3s ease;
 }
-.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 .toast span { color: var(--gold); }
 
 /* ── FOOTER ── */
