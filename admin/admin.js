@@ -390,7 +390,7 @@ function renderHorarios() {
           <input type="time" class="form-input" id="ci2-${h.id}" value="${h.cierre2 || ''}" />
           <button type="button" class="accion-btn eliminar" title="Quitar turno 2" onclick="quitarTurno2('${h.id}')">✕</button>
         </div>
-        <button class="accion-btn editar" onclick="guardarHorario('${h.id}')">Guardar</button>
+        <button class="accion-btn guardar-horario" onclick="guardarHorario('${h.id}')">Guardar</button>
       </div>
     </div>
   `).join('');

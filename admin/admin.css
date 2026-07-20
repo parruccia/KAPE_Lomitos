@@ -328,6 +328,16 @@ select.form-input option { background: #111; }
   cursor: not-allowed;
 }
 
+.accion-btn.guardar-horario {
+  background: #1f9d55;
+  color: #fff;
+  border-color: #1f9d55;
+}
+.accion-btn.guardar-horario:hover {
+  background: #17803f;
+  border-color: #17803f;
+}
+
 /* ── MODAL ── */
 .modal-overlay {
   position: fixed;
