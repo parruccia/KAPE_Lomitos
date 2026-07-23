@@ -3,10 +3,10 @@
 // ══════════════════════════════════════
 
 let todosLosProductos = [];
-let categoriaActiva   = 'todos';
-let editandoId        = null;
+let categoriaActiva = 'todos';
+let editandoId = null;
 
-let todasLasCategorias  = [];
+let todasLasCategorias = [];
 let editandoCategoriaId = null;
 let todosLosHorarios = [];
 
@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ── LOGIN ──
 async function login() {
-  const email   = document.getElementById('loginEmail').value.trim();
-  const pass    = document.getElementById('loginPass').value;
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
   const errorEl = document.getElementById('loginError');
-  const btn     = document.getElementById('loginBtn');
+  const btn = document.getElementById('loginBtn');
 
   errorEl.textContent = '';
   btn.disabled = true;
@@ -59,13 +59,17 @@ function cambiarSeccion(btn) {
   document.querySelectorAll('.seccion-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const sec = btn.dataset.sec;
-  document.getElementById('seccionProductos').style.display  = sec === 'productos'  ? 'block' : 'none';
+  document.getElementById('seccionProductos').style.display = sec === 'productos' ? 'block' : 'none';
   document.getElementById('seccionCategorias').style.display = sec === 'categorias' ? 'block' : 'none';
-  document.getElementById('seccionHorarios').style.display    = sec === 'horarios'  ? 'block' : 'none';
-  document.getElementById('seccionCupones').style.display     = sec === 'cupones'   ? 'block' : 'none';
+  document.getElementById('seccionHorarios').style.display = sec === 'horarios' ? 'block' : 'none';
+  document.getElementById('seccionCupones').style.display = sec === 'cupones' ? 'block' : 'none';
+  document.getElementById('seccionEstetica').style.display = sec === 'estetica' ? 'block' : 'none';
+  document.getElementById('seccionConfiguraciones').style.display = sec === 'configuraciones' ? 'block' : 'none';
   if (sec === 'categorias' && !todasLasCategorias.length) cargarCategorias();
   if (sec === 'horarios' && !todosLosHorarios.length) cargarHorarios();
   if (sec === 'cupones' && !todosLosCupones.length) cargarCupones();
+  if (sec === 'estetica') cargarLogoPreview();
+  if (sec === 'configuraciones') cargarDatosContacto();
 }
 
 // ── CARGAR PRODUCTOS ──
@@ -171,9 +175,9 @@ function llenarFiltrosProductos() {
 // ── ABRIR MODAL ──
 function abrirModal(id = null) {
   editandoId = id;
-  const modal   = document.getElementById('modal');
+  const modal = document.getElementById('modal');
   const overlay = document.getElementById('modalOverlay');
-  const title   = document.getElementById('modalTitle');
+  const title = document.getElementById('modalTitle');
   const errorEl = document.getElementById('modalError');
   const preview = document.getElementById('mImagenPreview');
 
@@ -186,24 +190,24 @@ function abrirModal(id = null) {
   if (id) {
     const p = todosLosProductos.find(x => x.id === id);
     title.textContent = 'Editar producto';
-    document.getElementById('mNombre').value      = p.nombre;
-    document.getElementById('mTamano').value      = p.tamano || '';
+    document.getElementById('mNombre').value = p.nombre;
+    document.getElementById('mTamano').value = p.tamano || '';
     document.getElementById('mDescripcion').value = p.descripcion || '';
-    document.getElementById('mPrecio').value      = p.precio;
-    document.getElementById('mCategoria').value   = p.categoria;
-    document.getElementById('mOrden').value       = p.orden;
-    document.getElementById('mSalsasIncluidas').value   = p.salsas_incluidas || 0;
+    document.getElementById('mPrecio').value = p.precio;
+    document.getElementById('mCategoria').value = p.categoria;
+    document.getElementById('mOrden').value = p.orden;
+    document.getElementById('mSalsasIncluidas').value = p.salsas_incluidas || 0;
     document.getElementById('mToppingsIncluidos').value = p.toppings_incluidos || 0;
     if (p.imagen) { preview.src = p.imagen; preview.style.display = 'block'; }
   } else {
     title.textContent = 'Nuevo producto';
-    document.getElementById('mNombre').value      = '';
-    document.getElementById('mTamano').value      = '';
+    document.getElementById('mNombre').value = '';
+    document.getElementById('mTamano').value = '';
     document.getElementById('mDescripcion').value = '';
-    document.getElementById('mPrecio').value      = '';
-    document.getElementById('mCategoria').value   = 'lomitos';
-    document.getElementById('mOrden').value       = '';
-    document.getElementById('mSalsasIncluidas').value   = 0;
+    document.getElementById('mPrecio').value = '';
+    document.getElementById('mCategoria').value = 'lomitos';
+    document.getElementById('mOrden').value = '';
+    document.getElementById('mSalsasIncluidas').value = 0;
     document.getElementById('mToppingsIncluidos').value = 0;
   }
 
@@ -223,7 +227,7 @@ function cerrarModal() {
 // ── PREVIEW IMAGEN ──
 function previewImagen(input) {
   const preview = document.getElementById('mImagenPreview');
-  const file    = input.files[0];
+  const file = input.files[0];
   if (!file) return;
   preview.src = URL.createObjectURL(file);
   preview.style.display = 'block';
@@ -231,7 +235,7 @@ function previewImagen(input) {
 
 // ── SUBIR IMAGEN ──
 async function subirImagen(file) {
-  const ext    = file.name.split('.').pop();
+  const ext = file.name.split('.').pop();
   const nombre = `${Date.now()}.${ext}`;
   const { error } = await db.storage.from('productos').upload(nombre, file, { upsert: true });
   if (error) return null;
@@ -241,20 +245,20 @@ async function subirImagen(file) {
 
 // ── GUARDAR PRODUCTO ──
 async function guardarProducto() {
-  const nombre      = document.getElementById('mNombre').value.trim();
-  const tamano      = document.getElementById('mTamano').value.trim();
+  const nombre = document.getElementById('mNombre').value.trim();
+  const tamano = document.getElementById('mTamano').value.trim();
   const descripcion = document.getElementById('mDescripcion').value.trim();
-  const precio      = parseInt(document.getElementById('mPrecio').value);
-  const categoria   = document.getElementById('mCategoria').value;
-  const orden       = parseInt(document.getElementById('mOrden').value) || 0;
-  const salsas_incluidas   = parseInt(document.getElementById('mSalsasIncluidas').value) || 0;
+  const precio = parseInt(document.getElementById('mPrecio').value);
+  const categoria = document.getElementById('mCategoria').value;
+  const orden = parseInt(document.getElementById('mOrden').value) || 0;
+  const salsas_incluidas = parseInt(document.getElementById('mSalsasIncluidas').value) || 0;
   const toppings_incluidos = parseInt(document.getElementById('mToppingsIncluidos').value) || 0;
-  const fileInput   = document.getElementById('mImagen');
-  const errorEl     = document.getElementById('modalError');
-  const btn         = document.getElementById('modalBtn');
+  const fileInput = document.getElementById('mImagen');
+  const errorEl = document.getElementById('modalError');
+  const btn = document.getElementById('modalBtn');
 
   errorEl.textContent = '';
-  if (!nombre)               { errorEl.textContent = 'El nombre es obligatorio.'; return; }
+  if (!nombre) { errorEl.textContent = 'El nombre es obligatorio.'; return; }
   if (!precio || isNaN(precio)) { errorEl.textContent = 'El precio es obligatorio.'; return; }
 
   btn.disabled = true;
@@ -407,9 +411,9 @@ async function toggleCerrado(id, cerrado) {
 // ── GUARDAR HORARIO (turnos de un día) ──
 async function guardarHorario(id) {
   const apertura1 = document.getElementById(`ap1-${id}`).value || null;
-  const cierre1   = document.getElementById(`ci1-${id}`).value || null;
+  const cierre1 = document.getElementById(`ci1-${id}`).value || null;
   const apertura2 = document.getElementById(`ap2-${id}`).value || null;
-  const cierre2   = document.getElementById(`ci2-${id}`).value || null;
+  const cierre2 = document.getElementById(`ci2-${id}`).value || null;
 
   const { error } = await db.from('horarios')
     .update({ apertura1, cierre1, apertura2, cierre2 })
@@ -434,8 +438,8 @@ async function moverCategoria(id, direccion) {
 
   if (indexVecino < 0 || indexVecino >= todasLasCategorias.length) return;
 
-  const actual  = todasLasCategorias[index];
-  const vecino  = todasLasCategorias[indexVecino];
+  const actual = todasLasCategorias[index];
+  const vecino = todasLasCategorias[indexVecino];
 
   const { error: e1 } = await db.from('categorias').update({ orden: vecino.orden }).eq('id', actual.id);
   const { error: e2 } = await db.from('categorias').update({ orden: actual.orden }).eq('id', vecino.id);
@@ -480,7 +484,7 @@ function generarSlug(nombre) {
 // ── ABRIR MODAL CATEGORÍA ──
 function abrirModalCategoria(id = null) {
   editandoCategoriaId = id;
-  const title   = document.getElementById('modalCategoriaTitle');
+  const title = document.getElementById('modalCategoriaTitle');
   const errorEl = document.getElementById('modalCategoriaError');
   const preview = document.getElementById('cImagenPreview');
 
@@ -529,14 +533,14 @@ function previewImagenCategoria(input) {
 
 // ── GUARDAR CATEGORÍA ──
 async function guardarCategoria() {
-  const nombre    = document.getElementById('cNombre').value.trim();
+  const nombre = document.getElementById('cNombre').value.trim();
   const personalizable = document.getElementById('cPersonalizable').checked;
   const visible_en_menu = document.getElementById('cVisibleMenu').checked;
   const precioExtraVal = document.getElementById('cPrecioExtra').value;
   const precio_extra = precioExtraVal ? parseInt(precioExtraVal) : null;
   const fileInput = document.getElementById('cImagen');
-  const errorEl   = document.getElementById('modalCategoriaError');
-  const btn       = document.getElementById('modalCategoriaBtn');
+  const errorEl = document.getElementById('modalCategoriaError');
+  const btn = document.getElementById('modalCategoriaBtn');
 
   errorEl.textContent = '';
   if (!nombre) { errorEl.textContent = 'El nombre es obligatorio.'; return; }
@@ -547,7 +551,7 @@ async function guardarCategoria() {
   const datos = { nombre, personalizable, visible_en_menu, precio_extra };
 
   if (!editandoCategoriaId) {
-    datos.slug  = generarSlug(nombre);
+    datos.slug = generarSlug(nombre);
     datos.orden = todasLasCategorias.length
       ? Math.max(...todasLasCategorias.map(c => c.orden)) + 1
       : 1;
@@ -618,11 +622,11 @@ function renderCupones() {
 
   tbody.innerHTML = todosLosCupones.map(c => {
     const valorTexto = c.tipo === 'porcentaje' ? `${c.valor}%` : formatPrice(c.valor);
-    const vencTexto  = c.vencimiento ? new Date(c.vencimiento + 'T00:00:00').toLocaleDateString('es-AR') : '—';
-    const usosTexto  = c.usos_maximos ? `${c.usos_actuales} / ${c.usos_maximos}` : `${c.usos_actuales} / ∞`;
+    const vencTexto = c.vencimiento ? new Date(c.vencimiento + 'T00:00:00').toLocaleDateString('es-AR') : '—';
+    const usosTexto = c.usos_maximos ? `${c.usos_actuales} / ${c.usos_maximos}` : `${c.usos_actuales} / ∞`;
 
     const vencido = c.vencimiento && new Date(c.vencimiento + 'T23:59:59') < new Date();
-    const agotado  = c.usos_maximos && c.usos_actuales >= c.usos_maximos;
+    const agotado = c.usos_maximos && c.usos_actuales >= c.usos_maximos;
     const estadoTexto = !c.activo ? 'Inactivo' : vencido ? 'Vencido' : agotado ? 'Agotado' : 'Activo';
 
     return `
@@ -666,11 +670,11 @@ function renderCupones() {
 
   tbody.innerHTML = todosLosCupones.map(c => {
     const valorTexto = c.tipo === 'porcentaje' ? `${c.valor}%` : formatPrice(c.valor);
-    const vencTexto  = c.vencimiento ? new Date(c.vencimiento + 'T00:00:00').toLocaleDateString('es-AR') : '—';
-    const usosTexto  = c.usos_maximos ? `${c.usos_actuales} / ${c.usos_maximos}` : `${c.usos_actuales} / ∞`;
+    const vencTexto = c.vencimiento ? new Date(c.vencimiento + 'T00:00:00').toLocaleDateString('es-AR') : '—';
+    const usosTexto = c.usos_maximos ? `${c.usos_actuales} / ${c.usos_maximos}` : `${c.usos_actuales} / ∞`;
 
     const vencido = c.vencimiento && new Date(c.vencimiento + 'T23:59:59') < new Date();
-    const agotado  = c.usos_maximos && c.usos_actuales >= c.usos_maximos;
+    const agotado = c.usos_maximos && c.usos_actuales >= c.usos_maximos;
     const estadoTexto = !c.activo ? 'Inactivo' : vencido ? 'Vencido' : agotado ? 'Agotado' : 'Activo';
 
     return `
@@ -693,7 +697,7 @@ function renderCupones() {
 // ── ABRIR MODAL CUPÓN ──
 function abrirModalCupon(id = null) {
   editandoCuponId = id;
-  const title   = document.getElementById('modalCuponTitle');
+  const title = document.getElementById('modalCuponTitle');
   const errorEl = document.getElementById('modalCuponError');
 
   errorEl.textContent = '';
@@ -745,14 +749,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── GUARDAR CUPÓN ──
 async function guardarCupon() {
   const codigo = document.getElementById('cuCodigo').value.trim().toUpperCase();
-  const tipo   = document.getElementById('cuTipo').value;
-  const valor  = parseFloat(document.getElementById('cuValor').value);
+  const tipo = document.getElementById('cuTipo').value;
+  const valor = parseFloat(document.getElementById('cuValor').value);
   const vencimiento = document.getElementById('cuVencimiento').value || null;
   const usosMaximosVal = document.getElementById('cuUsosMaximos').value;
   const usos_maximos = usosMaximosVal ? parseInt(usosMaximosVal) : null;
   const activo = document.getElementById('cuActivo').checked;
   const errorEl = document.getElementById('modalCuponError');
-  const btn     = document.getElementById('modalCuponBtn');
+  const btn = document.getElementById('modalCuponBtn');
 
   errorEl.textContent = '';
 
@@ -811,4 +815,95 @@ function showToast(msg) {
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+async function cambiarLogo(fileInput) {
+  const archivo = fileInput.files[0];
+  if (!archivo) return;
+
+  const nombreArchivo = 'logo-sitio.png';
+
+  const { error: errorUpload } = await db.storage
+    .from('logos')
+    .upload(nombreArchivo, archivo, { upsert: true });
+
+  if (errorUpload) {
+    showToast('Error al subir el logo: ' + errorUpload.message);
+    return;
+  }
+
+  const { data: urlData } = db.storage
+    .from('logos')
+    .getPublicUrl(nombreArchivo);
+
+  const urlConCacheBust = `${urlData.publicUrl}?t=${Date.now()}`;
+
+  const { error: errorUpdate } = await db
+    .from('configuracion_sitio')
+    .update({ logo_url: urlConCacheBust })
+    .eq('id', 1);
+
+  if (errorUpdate) {
+    showToast('Error al guardar el logo: ' + errorUpdate.message);
+    return;
+  }
+
+  document.getElementById('logoPreview').src = urlConCacheBust;
+  showToast('Logo actualizado correctamente');
+}
+
+async function cargarLogoPreview() {
+  const { data, error } = await db
+    .from('configuracion_sitio')
+    .select('logo_url')
+    .eq('id', 1)
+    .single();
+
+  if (!error && data?.logo_url) {
+    document.getElementById('logoPreview').src = data.logo_url;
+  }
+}
+
+async function cargarLogoHeader() {
+  const { data, error } = await db
+    .from('configuracion_sitio')
+    .select('logo_url')
+    .eq('id', 1)
+    .single();
+
+  if (!error && data?.logo_url) {
+    document.getElementById('logoHeader').src = data.logo_url;
+  }
+}
+
+cargarLogoHeader();
+
+async function cargarDatosContacto() {
+  const { data, error } = await db
+    .from('configuracion_sitio')
+    .select('alias_transferencia, direccion_local')
+    .eq('id', 1)
+    .single();
+
+  if (!error && data) {
+    document.getElementById('inputAlias').value = data.alias_transferencia || '';
+    document.getElementById('inputDireccion').value = data.direccion_local || '';
+  }
+}
+
+async function guardarDatosContacto() {
+  const alias = document.getElementById('inputAlias').value.trim();
+  const direccion = document.getElementById('inputDireccion').value.trim();
+
+  const { error } = await db
+    .from('configuracion_sitio')
+    .update({ alias_transferencia: alias, direccion_local: direccion })
+    .eq('id', 1);
+
+  if (error) {
+    showToast('Error al guardar: ' + error.message);
+    return;
+  }
+
+  showToast('Datos guardados correctamente');
 }

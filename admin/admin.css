@@ -26,20 +26,6 @@
   text-align: center;
 }
 
-.login-box .logo-k {
-  font-family: var(--font-d);
-  font-size: 3rem;
-  font-weight: 900;
-  background: linear-gradient(to bottom, var(--red) 33%, #fff 33% 66%, var(--navy) 66%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-  display: inline-block;
-  width: auto;
-  margin: 0 auto .2rem;
-}
-
 .login-title {
   font-family: var(--font-d);
   font-size: 1.8rem;
@@ -150,6 +136,12 @@ select.form-input option { background: #111; }
   transition: color .2s, border-color .2s;
 }
 .logout-btn:hover { color: var(--red); border-color: var(--red); }
+
+.logo-header-img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
 
 .admin-main {
   flex: 1;
@@ -708,3 +700,75 @@ select.form-input option { background: #111; }
     min-width: 90px;
   }
 }
+
+/* ── SECCIÓN ESTÉTICA ── */
+.logo-config {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem 1.8rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.logo-config-info h3 {
+  font-family: var(--font-d);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  margin: 0 0 .4rem;
+}
+
+.logo-config-desc {
+  font-size: .82rem;
+  color: rgba(240,237,232,.45);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.logo-config-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.logo-preview {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  background: #0d0d0d;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .4rem;
+}
+
+.logo-upload-btn {
+  display: inline-block;
+  font-family: var(--font-d);
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--gold);
+  border: none;
+  border-radius: 6px;
+  padding: .55rem 1.1rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.logo-upload-btn:hover {
+  background: #b8922e;
+}
+
+.logo-upload-btn input[type="file"] {
+  display: none;
+}
+

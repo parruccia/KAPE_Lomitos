@@ -91,13 +91,13 @@ function changeQty(btn, delta) {
     return;
   }
 
-  const qtyEl    = btn.parentElement;
-  const countEl  = qtyEl.querySelector('.qty__count');
-  const name     = qtyEl.dataset.name;
-  const size     = qtyEl.dataset.size;
-  const price    = parseInt(qtyEl.dataset.price);
+  const qtyEl = btn.parentElement;
+  const countEl = qtyEl.querySelector('.qty__count');
+  const name = qtyEl.dataset.name;
+  const size = qtyEl.dataset.size;
+  const price = parseInt(qtyEl.dataset.price);
   const categoria = qtyEl.dataset.categoria || '';
-  const cart     = getCart();
+  const cart = getCart();
 
   let current = parseInt(countEl.textContent) || 0;
   current = Math.max(0, current + delta);
@@ -126,24 +126,24 @@ function removeItem(key) {
 }
 
 function updateCartUI() {
-  const cart        = getCart();
-  const items       = Object.values(cart);
+  const cart = getCart();
+  const items = Object.values(cart);
   const lineasLomito = getLomitosCart();
 
-  const totalItems   = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const totalItems = items.reduce((s, i) => s + i.price * i.qty, 0);
   const totalLomitos = lineasLomito.reduce((s, l) => s + l.precioUnitario * l.qty, 0);
-  const total        = totalItems + totalLomitos;
+  const total = totalItems + totalLomitos;
 
-  const countItems   = items.reduce((s, i) => s + i.qty, 0);
+  const countItems = items.reduce((s, i) => s + i.qty, 0);
   const countLomitos = lineasLomito.reduce((s, l) => s + l.qty, 0);
-  const count        = countItems + countLomitos;
+  const count = countItems + countLomitos;
 
-  const badge   = document.getElementById('cartBadge');
+  const badge = document.getElementById('cartBadge');
   const totalEl = document.getElementById('cartTotal');
-  const drawerEl= document.getElementById('drawerItems');
+  const drawerEl = document.getElementById('drawerItems');
   const drawerT = document.getElementById('drawerTotal');
   const cartBtn = document.querySelector('.cart-btn');
-  
+
   if (totalEl) totalEl.textContent = formatPrice(total);
   if (badge) {
     badge.textContent = count;
@@ -167,7 +167,7 @@ function updateCartUI() {
   }
 
   const htmlLomitos = lineasLomito.map(l => {
-    const salsasTexto   = l.salsas.length ? `Salsas: ${l.salsas.map(s => s.nombre).join(', ')}` : '';
+    const salsasTexto = l.salsas.length ? `Salsas: ${l.salsas.map(s => s.nombre).join(', ')}` : '';
     const toppingsTexto = l.toppings.length ? `Toppings: ${l.toppings.map(t => t.nombre).join(', ')}` : '';
     return `
       <div class="drawer-item">
@@ -198,8 +198,8 @@ function updateCartUI() {
 }
 
 function toggleDrawer() {
-  const d    = document.getElementById('drawer');
-  const o    = document.getElementById('overlay');
+  const d = document.getElementById('drawer');
+  const o = document.getElementById('overlay');
   if (!d || !o) return;
   const open = d.classList.toggle('open');
   o.classList.toggle('open', open);
@@ -366,6 +366,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 function mostrarErrorCritico() {
   document.getElementById('errorBanner').classList.add('visible');
 }
+
+async function cargarLogoHeader() {
+  const logoEl = document.getElementById('logoHeader');
+  if (!logoEl) return;
+
+  const { data, error } = await db
+    .from('configuracion_sitio')
+    .select('logo_url')
+    .eq('id', 1)
+    .single();
+
+  if (!error && data?.logo_url) {
+    logoEl.src = data.logo_url;
+  }
+}
+
+async function cargarDatosConfiguracion() {
+  const { data, error } = await db
+    .from('configuracion_sitio')
+    .select('alias_transferencia, direccion_local')
+    .eq('id', 1)
+    .single();
+
+  if (!error && data) {
+    document.getElementById('direccionLocal').textContent = data.direccion_local || '';
+    window.aliasTransferencia = data.alias_transferencia || '';
+  }
+
+  armarLinkMapaLocal();
+}
+
+cargarLogoHeader();
 
 window.addEventListener('error', mostrarErrorCritico);
 window.addEventListener('unhandledrejection', mostrarErrorCritico);

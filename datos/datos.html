@@ -451,7 +451,7 @@
           const pagoTexto = { efectivo: 'Efectivo', qr: 'QR', transferencia: 'Transferencia' }[form.pago];
 
           const transferenciaTexto = form.pago === 'transferencia'
-            ? `\n*Alias para transferir:* kape.vm.ejemplo`
+            ? `\n*Alias para transferir:* ${window.aliasTransferencia || 'kape.vm.ejemplo'}`
             : '';
 
           const cuponTexto = cupon
@@ -520,7 +520,7 @@
       // ── Init ──
       document.addEventListener('DOMContentLoaded', () => {
         renderResumen();
-        armarLinkMapaLocal();
+        cargarDatosConfiguracion();
       });
     </script>
 

@@ -44,32 +44,9 @@ body {
 
 .logo { display: flex; align-items: center; gap: .5rem; }
 
-.logo-k {
-  font-family: var(--font-d);
-  font-size: 1.8rem;
-  font-weight: 900;
-  background: linear-gradient(to bottom, var(--red) 33%, #fff 33% 66%, var(--navy) 66%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-}
-
-.logo-name {
-  font-family: var(--font-d);
-  font-size: 1.5rem;
-  font-weight: 900;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--smoke);
-  display: block;
-}
-
-.logo-sub {
-  font-size: .62rem;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: var(--gold);
+.logo-header-img {
+  height: 40px;
+  width: auto;
   display: block;
 }
 

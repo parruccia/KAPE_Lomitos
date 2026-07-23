@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="admin.css" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
+
 <body>
 
   <!-- ══ LOGIN ══ -->
@@ -34,10 +36,11 @@
   <div class="panel-screen" id="panelScreen" style="display:none">
 
     <header class="header">
-        <span class="logo-k" aria-hidden="true">K</span>
-        <div class="logo-text">
-        </div>
-      </a>
+      <div class="logo">
+        <img id="logoHeader" class="logo-header-img" src="" alt="Logo Kapé">
+      </div>
+      <div class="logo-text">
+      </div>
       <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
     </header>
 
@@ -45,10 +48,12 @@
 
       <!-- Selector de sección -->
       <div class="secciones">
-      <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
-      <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
-      <button class="seccion-btn" data-sec="horarios" onclick="cambiarSeccion(this)">Horarios</button>
-      <button class="seccion-btn" data-sec="cupones" onclick="cambiarSeccion(this)">Cupones</button>
+        <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
+        <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
+        <button class="seccion-btn" data-sec="horarios" onclick="cambiarSeccion(this)">Horarios</button>
+        <button class="seccion-btn" data-sec="cupones" onclick="cambiarSeccion(this)">Cupones</button>
+        <button class="seccion-btn" data-sec="estetica" onclick="cambiarSeccion(this)">Estética</button>
+        <button class="seccion-btn" data-sec="configuraciones" onclick="cambiarSeccion(this)">Configuraciones</button>
       </div>
 
       <!-- ══ SECCIÓN PRODUCTOS ══ -->
@@ -102,226 +107,293 @@
       </div>
 
       <!-- ══ SECCIÓN CUPONES ══ -->
-<div id="seccionCupones" style="display:none">
-  <div class="toolbar">
-    <h2 class="toolbar__title">Cupones</h2>
-    <button class="add-btn" onclick="abrirModalCupon()">+ Nuevo cupón</button>
-  </div>
+      <div id="seccionCupones" style="display:none">
+        <div class="toolbar">
+          <h2 class="toolbar__title">Cupones</h2>
+          <button class="add-btn" onclick="abrirModalCupon()">+ Nuevo cupón</button>
+        </div>
 
-  <div class="tabla-wrap">
-    <div id="loadingCupones" class="loading-msg">Cargando cupones...</div>
-    <table class="tabla" id="tablaCupones" style="display:none">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Tipo</th>
-          <th>Valor</th>
-          <th>Vencimiento</th>
-          <th>Usos</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tablaCuponesBody"></tbody>
-    </table>
-  </div>
-</div>
+        <div class="tabla-wrap">
+          <div id="loadingCupones" class="loading-msg">Cargando cupones...</div>
+          <table class="tabla" id="tablaCupones" style="display:none">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Vencimiento</th>
+                <th>Usos</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCuponesBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ SECCIÓN ESTÉTICA ══ -->
+      <div id="seccionEstetica" style="display:none">
+        <div class="toolbar">
+          <h2 class="toolbar__title">Estética</h2>
+        </div>
+
+        <section class="logo-config">
+          <div class="logo-config-info">
+            <h3>Logo del sitio</h3>
+            <p class="logo-config-desc">Subí una imagen para reemplazar el logo actual en todo el sitio.</p>
+          </div>
+          <div class="logo-config-actions">
+            <img id="logoPreview" class="logo-preview" alt="Logo actual">
+            <label class="logo-upload-btn">
+              Elegir imagen
+              <input type="file" id="inputLogo" accept="image/*" onchange="cambiarLogo(this)">
+            </label>
+          </div>
+        </section>
+      </div>
+
+      <!-- ══ SECCIÓN CONFIGURACIONES ══ -->
+      <div id="seccionConfiguraciones" style="display:none">
+        <div class="toolbar">
+          <h2 class="toolbar__title">Configuraciones</h2>
+        </div>
+
+        <section class="logo-config" style="flex-direction:column; align-items:flex-start;">
+          <div class="logo-config-info" style="margin-bottom:1rem;">
+            <h3>Datos de contacto y pago</h3>
+            <p class="logo-config-desc">Se usan en el mensaje de WhatsApp y en el mapa de "Retiro en local".</p>
+          </div>
+
+          <div class="form-group" style="width:100%; margin-bottom:1rem;">
+            <label class="form-label">Alias de transferencia</label>
+            <input type="text" id="inputAlias" class="form-input" placeholder="ej: kape.lomitos">
+          </div>
+
+          <div class="form-group" style="width:100%; margin-bottom:1rem;">
+            <label class="form-label">Dirección del local</label>
+            <input type="text" id="inputDireccion" class="form-input" placeholder="ej: San Martín 123, Villa María">
+          </div>
+
+          <button class="add-btn" onclick="guardarDatosContacto()">Guardar cambios</button>
+        </section>
+      </div>
 
     </main>
 
- <!-- ══ MODAL PRODUCTO ══ -->
-  <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()"></div>
+    <!-- ══ MODAL PRODUCTO ══ -->
+    <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()"></div>
 
-  <div class="modal" id="modal">
-    <div class="modal__header">
-      <span class="modal__title" id="modalTitle">Nuevo producto</span>
-      <button class="drawer__close" onclick="cerrarModal()">✕</button>
-    </div>
-    <div class="modal__body">
+    <div class="modal" id="modal">
+      <div class="modal__header">
+        <span class="modal__title" id="modalTitle">Nuevo producto</span>
+        <button class="drawer__close" onclick="cerrarModal()">✕</button>
+      </div>
+      <div class="modal__body">
 
-      <div class="form-group">
-        <label class="form-label">Nombre</label>
-        <input class="form-input" type="text" id="mNombre" placeholder="Ej: AKY" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tamaño</label>
-        <input class="form-input" type="text" id="mTamano" placeholder="Ej: Pequeña (opcional)" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-input form-textarea" id="mDescripcion" placeholder="Descripción del producto..."></textarea>
-      </div>
-      <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Precio</label>
-          <input class="form-input" type="number" id="mPrecio" placeholder="Ej: 9500" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Orden</label>
-        <input class="form-input" type="number" id="mOrden" placeholder="Ej: 1" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Categoría</label>
-        <select class="form-input" id="mCategoria"></select>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Salsas incluidas (gratis)</label>
-          <input class="form-input" type="number" id="mSalsasIncluidas" placeholder="0" min="0" />
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" id="mNombre" placeholder="Ej: AKY" />
         </div>
         <div class="form-group">
-          <label class="form-label">Toppings incluidos (gratis)</label>
-          <input class="form-input" type="number" id="mToppingsIncluidos" placeholder="0" min="0" />
+          <label class="form-label">Tamaño</label>
+          <input class="form-input" type="text" id="mTamano" placeholder="Ej: Pequeña (opcional)" />
         </div>
-      </div>
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-input form-textarea" id="mDescripcion"
+            placeholder="Descripción del producto..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Precio</label>
+            <input class="form-input" type="number" id="mPrecio" placeholder="Ej: 9500" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Orden</label>
+          <input class="form-input" type="number" id="mOrden" placeholder="Ej: 1" />
+        </div>
 
-      <div class="form-group">
-        <label class="form-label">Imagen</label>
-        <label class="upload-label" for="mImagen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Elegir imagen
+        <div class="form-group">
+          <label class="form-label">Categoría</label>
+          <select class="form-input" id="mCategoria"></select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Salsas incluidas (gratis)</label>
+            <input class="form-input" type="number" id="mSalsasIncluidas" placeholder="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Toppings incluidos (gratis)</label>
+            <input class="form-input" type="number" id="mToppingsIncluidos" placeholder="0" min="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Imagen</label>
+          <label class="upload-label" for="mImagen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Elegir imagen
+          </label>
+          <input type="file" id="mImagen" accept="image/*" style="display:none" onchange="previewImagen(this)" />
+          <img id="mImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+        </div>
+
+        <p class="modal-error" id="modalError"></p>
+        <button class="submit-btn" id="modalBtn" onclick="guardarProducto()">Guardar</button>
+      </div>
+    </div>
+
+    <!-- ══ MODAL CATEGORÍA ══ -->
+    <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
+
+    <div class="modal" id="modalCategoria">
+      <div class="modal__header">
+        <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
+        <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
+      </div>
+      <div class="modal__body">
+
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Imagen</label>
+          <label class="upload-label" for="cImagen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Elegir imagen
+          </label>
+          <input type="file" id="cImagen" accept="image/*" style="display:none"
+            onchange="previewImagenCategoria(this)" />
+          <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+        </div>
+
+        <label class="opcion-check" style="cursor:pointer">
+          <span class="opcion-check__nombre">¿Permite elegir salsas y toppings?</span>
+          <input type="checkbox" id="cPersonalizable" />
         </label>
-        <input type="file" id="mImagen" accept="image/*" style="display:none" onchange="previewImagen(this)" />
-        <img id="mImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
-      </div>
 
-      <p class="modal-error" id="modalError"></p>
-      <button class="submit-btn" id="modalBtn" onclick="guardarProducto()">Guardar</button>
-    </div>
-  </div>
-
-  <!-- ══ MODAL CATEGORÍA ══ -->
-  <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
-
-  <div class="modal" id="modalCategoria">
-    <div class="modal__header">
-      <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
-      <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
-    </div>
-    <div class="modal__body">
-
-      <div class="form-group">
-        <label class="form-label">Nombre</label>
-        <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Imagen</label>
-        <label class="upload-label" for="cImagen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Elegir imagen
+        <label class="opcion-check" style="cursor:pointer">
+          <span class="opcion-check__nombre">¿Mostrar en el menú principal?</span>
+          <input type="checkbox" id="cVisibleMenu" checked />
         </label>
-        <input type="file" id="cImagen" accept="image/*" style="display:none" onchange="previewImagenCategoria(this)" />
-        <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+
+        <div class="form-group">
+          <label class="form-label">Precio extra (opcional, solo para categorías tipo Salsas/Toppings)</label>
+          <input class="form-input" type="number" id="cPrecioExtra" placeholder="Ej: 500" />
+        </div>
+
+        <p class="modal-error" id="modalCategoriaError"></p>
+        <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
       </div>
-
-      <label class="opcion-check" style="cursor:pointer">
-        <span class="opcion-check__nombre">¿Permite elegir salsas y toppings?</span>
-        <input type="checkbox" id="cPersonalizable" />
-      </label>
-
-      <label class="opcion-check" style="cursor:pointer">
-        <span class="opcion-check__nombre">¿Mostrar en el menú principal?</span>
-        <input type="checkbox" id="cVisibleMenu" checked />
-      </label>
-
-      <div class="form-group">
-        <label class="form-label">Precio extra (opcional, solo para categorías tipo Salsas/Toppings)</label>
-        <input class="form-input" type="number" id="cPrecioExtra" placeholder="Ej: 500" />
-      </div>
-
-      <p class="modal-error" id="modalCategoriaError"></p>
-      <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
     </div>
-  </div>
 
-  <!-- ══ MODAL CATEGORÍA ══ -->
-  <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
+    <!-- ══ MODAL CATEGORÍA ══ -->
+    <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
 
-  <div class="modal" id="modalCategoria">
-    <div class="modal__header">
-      <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
-      <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
-    </div>
-    <div class="modal__body">
-
-      <div class="form-group">
-        <label class="form-label">Nombre</label>
-        <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
+    <div class="modal" id="modalCategoria">
+      <div class="modal__header">
+        <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
+        <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
       </div>
+      <div class="modal__body">
 
-      <div class="form-group">
-        <label class="form-label">Imagen</label>
-        <label class="upload-label" for="cImagen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Elegir imagen
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Imagen</label>
+          <label class="upload-label" for="cImagen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Elegir imagen
+          </label>
+          <input type="file" id="cImagen" accept="image/*" style="display:none"
+            onchange="previewImagenCategoria(this)" />
+          <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
+        </div>
+
+        <p class="modal-error" id="modalCategoriaError"></p>
+        <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- ══ MODAL CUPÓN ══ -->
+    <div class="modal-overlay" id="modalOverlayCupon" onclick="cerrarModalCupon()"></div>
+
+    <div class="modal" id="modalCupon">
+      <div class="modal__header">
+        <span class="modal__title" id="modalCuponTitle">Nuevo cupón</span>
+        <button class="drawer__close" onclick="cerrarModalCupon()">✕</button>
+      </div>
+      <div class="modal__body">
+
+        <div class="form-group">
+          <label class="form-label">Código</label>
+          <input class="form-input" type="text" id="cuCodigo" placeholder="Ej: VERANO10"
+            style="text-transform:uppercase" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tipo de descuento</label>
+          <select class="form-input" id="cuTipo">
+            <option value="porcentaje">Porcentaje (%)</option>
+            <option value="fijo">Monto fijo ($)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="cuValorLabel">Valor (%)</label>
+          <input class="form-input" type="number" id="cuValor" placeholder="Ej: 10" min="0" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Vencimiento (opcional)</label>
+            <input class="form-input" type="date" id="cuVencimiento" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Usos máximos (opcional)</label>
+            <input class="form-input" type="number" id="cuUsosMaximos" placeholder="Sin límite" min="1" />
+          </div>
+        </div>
+
+        <label class="opcion-check" style="cursor:pointer">
+          <span class="opcion-check__nombre">Activo</span>
+          <input type="checkbox" id="cuActivo" checked />
         </label>
-        <input type="file" id="cImagen" accept="image/*" style="display:none" onchange="previewImagenCategoria(this)" />
-        <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
-      </div>
 
-      <p class="modal-error" id="modalCategoriaError"></p>
-      <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
-    </div>
-  </div>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <!-- ══ MODAL CUPÓN ══ -->
-<div class="modal-overlay" id="modalOverlayCupon" onclick="cerrarModalCupon()"></div>
-
-<div class="modal" id="modalCupon">
-  <div class="modal__header">
-    <span class="modal__title" id="modalCuponTitle">Nuevo cupón</span>
-    <button class="drawer__close" onclick="cerrarModalCupon()">✕</button>
-  </div>
-  <div class="modal__body">
-
-    <div class="form-group">
-      <label class="form-label">Código</label>
-      <input class="form-input" type="text" id="cuCodigo" placeholder="Ej: VERANO10" style="text-transform:uppercase" />
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Tipo de descuento</label>
-      <select class="form-input" id="cuTipo">
-        <option value="porcentaje">Porcentaje (%)</option>
-        <option value="fijo">Monto fijo ($)</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label" id="cuValorLabel">Valor (%)</label>
-      <input class="form-input" type="number" id="cuValor" placeholder="Ej: 10" min="0" />
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Vencimiento (opcional)</label>
-        <input class="form-input" type="date" id="cuVencimiento" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Usos máximos (opcional)</label>
-        <input class="form-input" type="number" id="cuUsosMaximos" placeholder="Sin límite" min="1" />
+        <p class="modal-error" id="modalCuponError"></p>
+        <button class="submit-btn" id="modalCuponBtn" onclick="guardarCupon()">Guardar</button>
       </div>
     </div>
 
-    <label class="opcion-check" style="cursor:pointer">
-      <span class="opcion-check__nombre">Activo</span>
-      <input type="checkbox" id="cuActivo" checked />
-    </label>
-
-    <p class="modal-error" id="modalCuponError"></p>
-    <button class="submit-btn" id="modalCuponBtn" onclick="guardarCupon()">Guardar</button>
-  </div>
-</div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabaseConfig.js"></script>
-  <script src="admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabaseConfig.js"></script>
+    <script src="admin.js"></script>
 
 </body>
+
 </html>
