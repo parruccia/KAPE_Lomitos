@@ -47,13 +47,16 @@
     <main class="admin-main">
 
       <!-- Selector de sección -->
-      <div class="secciones">
-        <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
-        <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
-        <button class="seccion-btn" data-sec="horarios" onclick="cambiarSeccion(this)">Horarios</button>
-        <button class="seccion-btn" data-sec="cupones" onclick="cambiarSeccion(this)">Cupones</button>
-        <button class="seccion-btn" data-sec="estetica" onclick="cambiarSeccion(this)">Estética</button>
-        <button class="seccion-btn" data-sec="configuraciones" onclick="cambiarSeccion(this)">Configuraciones</button>
+      <div class="secciones-wrap">
+        <div class="secciones">
+          <button class="seccion-btn active" data-sec="productos" onclick="cambiarSeccion(this)">Productos</button>
+          <button class="seccion-btn" data-sec="categorias" onclick="cambiarSeccion(this)">Categorías</button>
+          <button class="seccion-btn" data-sec="horarios" onclick="cambiarSeccion(this)">Horarios</button>
+          <button class="seccion-btn" data-sec="cupones" onclick="cambiarSeccion(this)">Cupones</button>
+          <button class="seccion-btn" data-sec="estetica" onclick="cambiarSeccion(this)">Estética</button>
+          <button class="seccion-btn" data-sec="configuraciones" onclick="cambiarSeccion(this)">Configuraciones</button>
+        </div>
+        <span class="secciones-flecha">›</span>
       </div>
 
       <!-- ══ SECCIÓN PRODUCTOS ══ -->

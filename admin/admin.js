@@ -17,6 +17,12 @@ let editandoCuponId = null;
 document.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await db.auth.getSession();
   if (session) mostrarPanel();
+
+  const cont = document.querySelector('.secciones');
+  if (cont) {
+    chequearScrollSecciones();
+    cont.addEventListener('scroll', chequearScrollSecciones);
+  }
 });
 
 // ── LOGIN ──
@@ -907,3 +913,13 @@ async function guardarDatosContacto() {
 
   showToast('Datos guardados correctamente');
 }
+
+function chequearScrollSecciones() {
+  const cont = document.querySelector('.secciones');
+  const flecha = document.querySelector('.secciones-flecha');
+  if (!cont || !flecha) return;
+
+  const llegoAlTope = cont.scrollLeft + cont.clientWidth >= cont.scrollWidth - 4;
+  flecha.classList.toggle('oculta', llegoAlTope);
+}
+

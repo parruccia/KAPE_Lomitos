@@ -779,3 +779,49 @@ select.form-input option { background: #111; }
   display: none;
 }
 
+.secciones-wrap {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.secciones-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to right, transparent, var(--black));
+  pointer-events: none;
+  z-index: 1;
+}
+
+.secciones-flecha {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--gold);
+  pointer-events: none;
+  animation: flecha-rebote 1.4s ease-in-out infinite;
+  transition: opacity .2s;
+  z-index: 2;
+  padding-bottom: 7px;
+}
+
+.secciones-flecha.oculta {
+  opacity: 0 !important;
+  animation: none;
+}
+
+@keyframes flecha-rebote {
+  0%, 100% { transform: translateX(0); opacity: .6; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+
