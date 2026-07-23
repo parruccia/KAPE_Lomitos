@@ -469,6 +469,13 @@ select.form-input option { background: #111; }
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border);
   padding-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.secciones::-webkit-scrollbar {
+  display: none;
 }
 
 .seccion-btn {
@@ -484,9 +491,9 @@ select.form-input option { background: #111; }
   padding: .6rem .3rem;
   cursor: pointer;
   transition: color .2s, border-color .2s;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-.seccion-btn:hover { color: var(--smoke); }
-.seccion-btn.active { color: var(--gold); border-color: var(--gold); }
 
 /* ── GRID DE CATEGORÍAS ── */
 .cat-grid {
