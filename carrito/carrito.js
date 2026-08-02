@@ -379,6 +379,7 @@ async function cargarLogoHeader() {
 
   if (!error && data?.logo_url) {
     logoEl.src = data.logo_url;
+    logoEl.style.visibility = 'visible';
   }
 }
 
