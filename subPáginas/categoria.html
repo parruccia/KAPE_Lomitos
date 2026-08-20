@@ -3,24 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pageTitle">Categoría — KAPÉ</title>
+  <title id="pageTitle">Categoría — KAPÉ Lomitos Árabes</title>
+  <meta name="description" id="pageDescription" content="Explorá el menú de KAPÉ Lomitos Árabes en Villa María, Córdoba. Pedí online con delivery o retiro en local." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0D0D0D" />
+  <link rel="canonical" href="https://www.xn--kap-dma.com.ar/subP%C3%A1ginas/categoria.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Menú — KAPÉ Lomitos Árabes" />
+  <meta property="og:description" content="Explorá el menú completo y pedí online con delivery o retiro en local." />
+  <meta property="og:url" content="https://www.xn--kap-dma.com.ar/subP%C3%A1ginas/categoria.html" />
+  <meta property="og:site_name" content="KAPÉ Lomitos Árabes" />
+  <meta property="og:locale" content="es_AR" />
   <link rel="stylesheet" href="lomitos.css" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 <body>
 
-  <header class="header">
-    <a href="../index.html" class="back-btn">
+  <header class="header" role="banner">
+    <a href="../index.html" class="back-btn" aria-label="Volver al inicio">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-           stroke-linecap="round" stroke-linejoin="round">
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
       Volver
     </a>
-    </a>
-    <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
+      <button class="cart-btn" onclick="toggleDrawer()" aria-label="Abrir carrito de compras">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
         <line x1="3" y1="6" x2="21" y2="6"/>
         <path d="M16 10a4 4 0 01-8 0"/>
@@ -37,17 +46,17 @@
     </div>
   </section>
 
-  <main class="menu">
+    <main class="menu" id="mainContent">
     <div id="productosList"></div>
     <div id="loadingMsg" class="loading-msg">Cargando productos...</div>
   </main>
 
   <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
 
-  <aside class="drawer" id="drawer">
+    <aside class="drawer" id="drawer" role="dialog" aria-label="Carrito de compras" aria-modal="true">
     <div class="drawer__header">
       <span class="drawer__title">Tu pedido</span>
-      <button class="drawer__close" onclick="toggleDrawer()">✕</button>
+      <button class="drawer__close" onclick="toggleDrawer()" aria-label="Cerrar carrito">✕</button>
     </div>
     <div class="drawer__items" id="drawerItems">
       <p class="drawer__empty">Tu carrito está vacío.</p>
@@ -57,7 +66,7 @@
         <span class="drawer__subtotal-label">Total</span>
         <span class="drawer__subtotal-price" id="drawerTotal">$0</span>
       </div>
-      <button class="checkout-btn" onclick="handleCheckout()">Confirmar pedido</button>
+      <button class="checkout-btn" onclick="handleCheckout()" aria-label="Confirmar y enviar pedido">Confirmar pedido</button>
     </div>
   </aside>
 
@@ -67,7 +76,7 @@
   <div class="modal-personalizar" id="modalPersonalizar">
     <div class="modal-personalizar__header">
       <span class="modal-personalizar__title" id="personalizarNombre">Producto</span>
-      <button class="drawer__close" onclick="cerrarPersonalizar()">✕</button>
+      <button class="drawer__close" onclick="cerrarPersonalizar()" aria-label="Cerrar personalización">✕</button>
     </div>
     <div class="modal-personalizar__body">
       <div class="modal-personalizar__grupo">
@@ -81,14 +90,14 @@
     </div>
     <div class="modal-personalizar__footer">
       <span class="modal-personalizar__total" id="personalizarTotal">$0</span>
-      <button class="checkout-btn" onclick="confirmarPersonalizar()">Agregar al pedido</button>
+      <button class="checkout-btn" onclick="confirmarPersonalizar()" aria-label="Agregar producto personalizado al pedido">Agregar al pedido</button>
     </div>
   </div>
 
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <span>© 2026 Kapé · Villa María</span>
   </footer>
 

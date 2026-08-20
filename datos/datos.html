@@ -4,18 +4,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tu pedido — KAPÉ</title>
+  <title>Confirmar pedido — KAPÉ Lomitos Árabes</title>
+  <meta name="description" content="Completá tus datos y enviá tu pedido de lomitos árabes por WhatsApp. KAPÉ, Villa María, Córdoba." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0D0D0D" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="stylesheet" href="../carrito/carrito.css" />
   <link rel="stylesheet" href="datos.css" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 
 <body>
 
-  <header class="header">
-    <a href="javascript:history.back()" class="back-btn">
+  <header class="header" role="banner">
+    <a href="javascript:history.back()" class="back-btn" aria-label="Volver a la página anterior">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-        stroke-linejoin="round">
+        stroke-linejoin="round" aria-hidden="true">
         <polyline points="15 18 9 12 15 6" />
       </svg>
       Volver
@@ -52,11 +55,6 @@
           y enterate de todos.
         </p>
 
-      </div>
-
-      <div class="resumen__descuento" id="resumenDescuentoRow" style="display:none">
-        <span class="resumen__total-label">Descuento</span>
-        <span class="resumen__total-price" id="resumenDescuento">-$0</span>
       </div>
 
       <div class="resumen__descuento" id="resumenDescuentoRow" style="display:none">
@@ -158,9 +156,9 @@
 
         </div> <!-- ← cierra form-group -->
 
-        <button class="submit-btn" onclick="enviarPedido()">
+        <button class="submit-btn" onclick="enviarPedido()" aria-label="Enviar pedido por WhatsApp">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
+            stroke-linejoin="round" aria-hidden="true">
             <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07
                    A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.9 1.18 2 2 0 012.88.02
                    h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 7.91
@@ -172,10 +170,11 @@
 
       </div>
     </div>
+    </div><!-- /page -->
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
       <span>© 2026 Kapé · Villa María</span>
       <a href="https://instagram.com/kape.vm" target="_blank" rel="noopener">Instagram</a>
     </footer>

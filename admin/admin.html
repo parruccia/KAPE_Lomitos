@@ -4,11 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — KAPÉ</title>
+  <title>Panel Admin — KAPÉ Lomitos Árabes</title>
+  <meta name="description" content="Panel de administración de KAPÉ Lomitos Árabes. Gestión de productos, categorías, horarios y cupones." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0D0D0D" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../carrito/carrito.css" />
   <link rel="stylesheet" href="admin.css" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
 
 <body>
@@ -28,20 +31,20 @@
         <input class="form-input" type="password" id="loginPass" />
       </div>
       <p class="login-error" id="loginError"></p>
-      <button class="submit-btn" id="loginBtn" onclick="login()">Ingresar</button>
+      <button class="submit-btn" id="loginBtn" onclick="login()" aria-label="Ingresar al panel de administración">Ingresar</button>
     </div>
   </div>
 
   <!-- ══ PANEL ══ -->
   <div class="panel-screen" id="panelScreen" style="display:none">
 
-    <header class="header">
+    <header class="header" role="banner">
       <div class="logo">
         <img id="logoHeader" class="logo-header-img" src="" alt="Logo Kapé">
       </div>
       <div class="logo-text">
       </div>
-      <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+      <button class="logout-btn" onclick="logout()" aria-label="Cerrar sesión del panel admin">Cerrar sesión</button>
     </header>
 
     <main class="admin-main">
@@ -305,42 +308,6 @@
       </div>
     </div>
 
-    <!-- ══ MODAL CATEGORÍA ══ -->
-    <div class="modal-overlay" id="modalOverlayCat" onclick="cerrarModalCategoria()"></div>
-
-    <div class="modal" id="modalCategoria">
-      <div class="modal__header">
-        <span class="modal__title" id="modalCategoriaTitle">Nueva categoría</span>
-        <button class="drawer__close" onclick="cerrarModalCategoria()">✕</button>
-      </div>
-      <div class="modal__body">
-
-        <div class="form-group">
-          <label class="form-label">Nombre</label>
-          <input class="form-input" type="text" id="cNombre" placeholder="Ej: Bebidas" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Imagen</label>
-          <label class="upload-label" for="cImagen">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            Elegir imagen
-          </label>
-          <input type="file" id="cImagen" accept="image/*" style="display:none"
-            onchange="previewImagenCategoria(this)" />
-          <img id="cImagenPreview" class="imagen-preview" alt="Preview" style="display:none" />
-        </div>
-
-        <p class="modal-error" id="modalCategoriaError"></p>
-        <button class="submit-btn" id="modalCategoriaBtn" onclick="guardarCategoria()">Guardar</button>
-      </div>
-    </div>
-
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <!-- ══ MODAL CUPÓN ══ -->
@@ -392,6 +359,7 @@
         <button class="submit-btn" id="modalCuponBtn" onclick="guardarCupon()">Guardar</button>
       </div>
     </div>
+    </div><!-- /panel-screen -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabaseConfig.js"></script>

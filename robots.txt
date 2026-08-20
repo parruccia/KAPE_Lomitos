@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /datos/
+
+Sitemap: https://www.xn--kap-dma.com.ar/sitemap.xml

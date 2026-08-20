@@ -4,7 +4,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KAPÉ — Lomitos Árabes</title>
+  <title>KAPÉ — Lomitos Árabes | Pedí online en Villa María, Córdoba</title>
+  <meta name="description" content="KAPÉ - Lomitos Árabes en Villa María, Córdoba. Pedí online tu lomito árabe favorito con delivery o retiro en local. Menú completo, salsas, toppings y promociones." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="KAPÉ Lomitos Árabes" />
+  <meta name="theme-color" content="#0D0D0D" />
+  <link rel="canonical" href="https://www.xn--kap-dma.com.ar/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="KAPÉ — Lomitos Árabes | Pedí online en Villa María" />
+  <meta property="og:description" content="Pedí online tu lomito árabe favorito con delivery o retiro en local. Menú completo, salsas, toppings y promociones." />
+  <meta property="og:url" content="https://www.xn--kap-dma.com.ar/" />
+  <meta property="og:site_name" content="KAPÉ Lomitos Árabes" />
+  <meta property="og:locale" content="es_AR" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="KAPÉ — Lomitos Árabes | Pedí online" />
+  <meta name="twitter:description" content="Pedí online tu lomito árabe favorito con delivery o retiro en local. Villa María, Córdoba." />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FoodEstablishment",
+    "name": "KAPÉ Lomitos Árabes",
+    "description": "Lomitos árabes con delivery y retiro en local. Villa María, Córdoba.",
+    "url": "https://www.xn--kap-dma.com.ar/",
+    "telephone": "+5493534214780",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "La Rioja 524",
+      "addressLocality": "Villa María",
+      "addressRegion": "Córdoba",
+      "addressCountry": "AR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -32.4075,
+      "longitude": -63.2406
+    },
+    "servesCuisine": "Lomitos Árabes",
+    "priceRange": "$$",
+    "sameAs": [
+      "https://www.instagram.com/kape.vm"
+    ],
+    "hasMenu": {
+      "@type": "Menu",
+      "url": "https://www.xn--kap-dma.com.ar/"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik+Distressed&display=swap" rel="stylesheet">
@@ -17,10 +69,10 @@
 
   <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
 
-  <aside class="drawer" id="drawer">
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Carrito de compras" aria-modal="true">
     <div class="drawer__header">
       <span class="drawer__title">Tu pedido</span>
-      <button class="drawer__close" onclick="toggleDrawer()">✕</button>
+      <button class="drawer__close" onclick="toggleDrawer()" aria-label="Cerrar carrito">✕</button>
     </div>
     <div class="drawer__items" id="drawerItems">
       <p class="drawer__empty">Tu carrito está vacío.</p>
@@ -30,21 +82,21 @@
         <span class="drawer__subtotal-label">Total</span>
         <span class="drawer__subtotal-price" id="drawerTotal">$0</span>
       </div>
-      <button class="checkout-btn" onclick="handleCheckout()">Confirmar pedido</button>
+      <button class="checkout-btn" onclick="handleCheckout()" aria-label="Confirmar y enviar pedido">Confirmar pedido</button>
     </div>
   </aside>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- ══ HEADER ══ -->
-  <header class="header">
+  <header class="header" role="banner">
     <div class="logo">
       <img id="logoHeader" class="logo-header-img" src="" alt="Logo Kapé" style="visibility:hidden">
     </div>
     <div class="header__right">
-      <button class="cart-btn" onclick="toggleDrawer()" aria-label="Ver carrito">
+      <button class="cart-btn" onclick="toggleDrawer()" aria-label="Abrir carrito de compras">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
+          stroke-linejoin="round" aria-hidden="true">
           <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
           <line x1="3" y1="6" x2="21" y2="6" />
           <path d="M16 10a4 4 0 01-8 0" />
@@ -61,7 +113,7 @@
     <p class="hero__subtitle">— Lomitos Árabes —</p>
     <a class="hero__instagram" href="https://instagram.com/kape.vm" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round">
+        stroke-linejoin="round" aria-hidden="true">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
         <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
@@ -76,8 +128,8 @@
 </main>
 
   <!-- ══ FOOTER ══ -->
-  <footer class="footer">
-  <span>Desarrollado por <a href="https://hornerosoftware.pages.dev/">Hornero Software</a></span>
+  <footer class="footer" role="contentinfo">
+  <span>Desarrollado por <a href="https://hornerosoftware.pages.dev/" rel="noopener">Hornero Software</a></span>
 </footer>
 
   <!-- 1. Librería de Supabase -->
